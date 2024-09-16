@@ -28,7 +28,12 @@ begin
 	mux_r 		<= signed(data_in) when sel_mux(1) = '1'  else signed(mux_a);
 	mux_a 		<= std_logic_vector(res_alu) when sel_mux(0) = '1' else std_logic_vector(r1_sg);
 
+	process(clk)
+	begin
+		if clk'event and clk = '1' then
+			if load_hold(0) = '1' then 
 
+----------------------- Daqui para baixo não mexi ---------------
 
 	--display (Não sei como se faz),
 	res_d 		<= std_logic_vector(res_alu) 
