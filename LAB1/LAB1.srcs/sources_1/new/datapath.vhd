@@ -56,7 +56,7 @@ begin
 	end process;
 	
 
-
+--pepepopo
 ----------------------- Daqui para baixo não mexi ---------------
   -- output
   reg1 <= register1;
