@@ -22,7 +22,9 @@ architecture behavioral of datapath is
   signal accum     : std_logic_vector (7 downto 0) := (others => '0');
   -- the next signal initialization is only considered for simulation
   signal register1 : std_logic_vector (7 downto 0) := (others => '0');
-
+  
+----------------------------------------------------------------------------
+--not all who wander are lost ----------------------------------------------
 begin
 	-- Pre-Regs
 	r1_sg 		<= signed(register1); 
