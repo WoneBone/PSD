@@ -16,10 +16,9 @@ architecture behavioral of datapath is
 	signal mux_r, r2_sg, res_alu 	: signed (15 downto 0);
 	signal mux_a 					: std_logic_vector (15 downto 0);
 	signal register1 				: std_logic_vector (9 downto 0);
-	signal register2				: std_logic_vector (9 downto 0);
 	
   -- the next signal initialization is only considered for simulation
-  signal accum     : std_logic_vector (7 downto 0) := (others => '0');
+  signal accum     : std_logic_vector (7 downto 0) := (others => '0');	
   -- the next signal initialization is only considered for simulation
   signal register1 : std_logic_vector (7 downto 0) := (others => '0');
 
