@@ -4,7 +4,7 @@ use IEEE.NUMERIC_STD.all;
 
 entity datapath is
   port (
-  		
+  		data_in                 : in std_logic_vector (9 downto 0);
 		load_hold, sel_mux 		: in std_logic_vector (1 downto 0);
 		sel_alu 				: in std_logic_vector (2 downto 0);
 		clk, rst 				: in std_logic;
@@ -19,11 +19,7 @@ architecture behavioral of datapath is
 	signal data_1, data_2 : signed(15 downto 0);
     signal add_sub , mul : signed (15 downto 0);
     signal shift : unsigned(15 downto 0);
-	
-  -- the next signal initialization is only considered for simulation
-  signal accum     : std_logic_vector (7 downto 0) := (others => '0');	
-  -- the next signal initialization is only considered for simulation
-  signal register1 : std_logic_vector (7 downto 0) := (others => '0');
+ 
   
 ----------------------------------------------------------------------------
 --not all who wander are lost ----------------------------------------------
@@ -40,7 +36,7 @@ begin
 	begin
 		if clk'event and clk = '1' then
 			if rst = '1' then
-				r1_sg <= '0';
+				register1 <= x"00";
 			elsif load_hold(0) = '1' then 
 				register1 <= data_in;
 			end if;
@@ -52,29 +48,30 @@ begin
 	begin
 		if clk'event and clk = '1' then
 			if rst = '1' then
-				r2_sg <= '0';
+				r2_sg <= x"00";
 			elsif load_hold(1) = '1' then 
 				r2_sg <= mux_r;
 			end if;
 		end if;
 	end process;
 	
---ALU	
+--ALU
+process(clk)
+begin
 	case sel_alu is
-        when sel_alu = "000"=>
+        when "000"=>
             add_sub<= r1_sg-r2_sg;
             res_alu<= add_sub;
             
-        when sel_alu = "001" =>
+        when "001" =>
             add_sub<= r1_sg+r2_sg;
             res_alu<= add_sub;
             
-        when sel_alu = "010"=>
-            shift <= unsigned(r1_sg);
-            shift <= rotate_left(shift ; 1);
+        when "010"=>
+            shift <= rotate_left( unsigned(r1_sg), 1);
             res_alu<=signed(shift);
         
-        when sel_alu = "011"=> 
+        when  "011"=> 
             logic<= std_logic_vector(r1_sg) and std_logic_vector(r2_sg);
             res_alu<=signed(logic);
          
@@ -82,11 +79,12 @@ begin
             mul<=r1_sg*r2_sg;
             res_alu<=mul;
             
-        end case;     
+        end case;
+end process;   
 
 
 ----------------------- Daqui para baixo não mexi ---------------
   -- output
-  reg1 <= register1;
-  res  <= accum;
+    display <= mux_a;
+    
 end behavioral;
