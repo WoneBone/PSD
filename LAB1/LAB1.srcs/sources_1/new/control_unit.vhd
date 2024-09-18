@@ -38,7 +38,7 @@ entity control_unit is
         switch                           : in std_logic;
         clk                              : in std_logic;
         sel_mux2 ,sel_mux1 , load_hold1 ,load_hold2 : out std_logic;
-        rst_1 , rst_2                               : out std_logic;
+        rst_1                                         : out std_logic;
         sel_alu                    : out std_logic_vector(2 downto 0)
         
     );
@@ -120,43 +120,43 @@ begin
             case curr_state is
                 when INITIAL =>
                     sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='0'; load_hold2 <='0';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="000";         
                 when ADDS    =>
                     sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="001";
                 when SUBS    =>
                     sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="000";
                 when MULS    =>
                     sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="1XX";
                 when LOGIC   =>
                     sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="011";
                 when SHIFT   =>
                     sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="010";
                 when LOAD1   =>
                     sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='1'; load_hold2 <='0';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="XXX";
                 when LOAD2   =>
                     sel_mux2 <='1'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="XXX";
                 when RST     =>
                     sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='0'; load_hold2 <='0';
-                    rst_1<='1'; rst_2<='1';
+                    rst_1<='0';
                     sel_alu<="XXX";
                 when others   =>  -- FINAL --
                     sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='0'; load_hold2 <='0';
-                    rst_1<='0'; rst_2<='0';
+                    rst_1<='0';
                     sel_alu<="000";
             end case;
         end if; 
