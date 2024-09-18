@@ -37,7 +37,7 @@ begin
 	begin
 		if clk'event and clk = '1' then
 			if rst = '1' then
-				r1_sg <= '0';
+				register1 <= '0';
 			elsif load_hold(0) = '1' then 
 				register1 <= data_in;
 			end if;
