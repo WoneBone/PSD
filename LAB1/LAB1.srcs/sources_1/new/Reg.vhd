@@ -41,7 +41,6 @@ entity Reg is
 end Reg;
 
 architecture Behavioral of Reg is
-	signal 
 	
 begin
 

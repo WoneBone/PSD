@@ -8,7 +8,7 @@ entity datapath is
 		load_hold, sel_mux 		: in std_logic_vector (1 downto 0);
 		sel_alu 				: in std_logic_vector (2 downto 0);
 		clk, rst 				: in std_logic;
-  		display 				: out std_logic_vector 15 downto 0));
+  		display 				: out std_logic_vector (15 downto 0));
 end datapath;
 
 architecture behavioral of datapath is
