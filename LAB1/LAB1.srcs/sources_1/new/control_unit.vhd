@@ -54,7 +54,7 @@ begin
 
 --turn currstate into next state --
     process(clk) begin
-        if clk'event and clk = '1' then begin
+        if clk'event and clk = '1' then
             curr_state <= next_state;
         end if;
     end process;
@@ -62,9 +62,9 @@ begin
 --calculate next state based on inputs --
     process(clk,curr_state) begin
         next_state <= curr_state; --default is maintaining state --
-        if clk'event and clk = '1' then begin
-            if buttons(0) = '1' then
-                next_stage <= 
+        if clk'event and clk = '1' then
+            if (buttons(0) = '1') then
+                next_state <= RST;
             else 
                 case curr_state is
                     when INITIAL =>
@@ -116,48 +116,48 @@ begin
     
 --calculate output based on current state ----
     process(clk,curr_state) begin
-        if clk'event and clk = '1' then begin
+        if clk'event and clk = '1' then
             case curr_state is
                 when INITIAL =>
-                    sel_mux2 ='0'; sel_mux1 ='0'; load_hold1 ='0'; load_hold2 ='0';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="000";         
+                    sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='0'; load_hold2 <='0';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="000";         
                 when ADDS    =>
-                    sel_mux2 ='0'; sel_mux1 ='1'; load_hold1 ='0'; load_hold2 ='1';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="001";
+                    sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="001";
                 when SUBS    =>
-                    sel_mux2 ='0'; sel_mux1 ='1'; load_hold1 ='0'; load_hold2 ='1';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="000";
+                    sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="000";
                 when MULS    =>
-                    sel_mux2 ='0'; sel_mux1 ='1'; load_hold1 ='0'; load_hold2 ='1';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="1XX";
+                    sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="1XX";
                 when LOGIC   =>
-                    sel_mux2 ='0'; sel_mux1 ='1'; load_hold1 ='0'; load_hold2 ='1';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="011";
+                    sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="011";
                 when SHIFT   =>
-                    sel_mux2 ='0'; sel_mux1 ='1'; load_hold1 ='0'; load_hold2 ='1';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="010";
+                    sel_mux2 <='0'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="010";
                 when LOAD1   =>
-                    sel_mux2 ='0'; sel_mux1 ='0'; load_hold1 ='1'; load_hold2 ='0';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="XXX";
+                    sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='1'; load_hold2 <='0';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="XXX";
                 when LOAD2   =>
-                    sel_mux2 ='1'; sel_mux1 ='1'; load_hold1 ='0'; load_hold2 ='1';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="XXX";
+                    sel_mux2 <='1'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="XXX";
                 when RST     =>
-                    sel_mux2 ='0'; sel_mux1 ='0'; load_hold1 ='0'; load_hold2 ='0';
-                    rst_1='1'; rst_2='1';
-                    sel_alu="XXX";
+                    sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='0'; load_hold2 <='0';
+                    rst_1<='1'; rst_2<='1';
+                    sel_alu<="XXX";
                 when others   =>  -- FINAL --
-                    sel_mux2 ='0'; sel_mux1 ='0'; load_hold1 =''; load_hold2 ='';
-                    rst_1='0'; rst_2='0';
-                    sel_alu="000";
+                    sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='0'; load_hold2 <='0';
+                    rst_1<='0'; rst_2<='0';
+                    sel_alu<="000";
             end case;
         end if; 
     end process;
