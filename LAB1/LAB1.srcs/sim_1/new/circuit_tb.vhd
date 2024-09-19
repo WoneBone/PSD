@@ -49,17 +49,55 @@ architecture Behavioral of circuit_tb is
     signal  ADD_SUB, LOAD, MULS, LOGIC_SHIFT, switch     :  std_logic := '0';
 	signal data 	: std_logic_vector(15 downto 0);
 
-    
+     -- Clock period definitions
+    constant clk_period : time := 10 ns;
+
 begin
 	
-	uut : circuit_tb port map(
+	uut : circuit port map(
 	clk => clk ,  
-	reset => reset ,
+	rst => reset ,
 	ADD_SUB => ADD_SUB,
 	LOAD => LOAD,
 	LOGIC_SHIFT => LOGIC_SHIFT,
+	MULS=> MULS,
 	switch => switch,
-	data => data,
-	);
+	data_in => data);
+	
+	 -- Clock definition
+    clk <= not clk after clk_period/2;
+    
+    stim_proc : process
+        begin
+    -- hold reset state for 100 ns.
+        wait for 100 ns;
 
+        wait for clk_period*10;
+        
+        -- insert stimulus here
+    -- note that input signals should never change at the positive edge of the clock
+        reset <= '1' after 20 ns,
+                 '0' after 40 ns;
+        
+        data <= X"04" after 40 ns,
+                X"08" after 80 ns,
+                X"0E" after 120 ns;
+        
+        
+        LOAD <= '1' after 40 ns,
+                '0' after 50 ns,
+                '1' after 80 ns,
+                '0' after 90 ns;
+                
+                 
+        switch <= '1' after 80 ns,
+                  '0' after 90 ns;
+                    
+        
+        ADD_SUB <= '1' after 100 ns;
+        
+        
+        
+    end process;
+    
 end Behavioral;
