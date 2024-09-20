@@ -51,19 +51,25 @@ architecture Behavioral of control_unit is
                         RST,FINAL );
     signal curr_state , next_state : fsm_states;
 begin
-
+    
 --turn currstate into next state --
     process(clk) begin
+        
         if clk'event and clk = '1' then
+            if (buttons(0) = '1') then 
+                curr_state <= FINAL;
+        
+            else  
             curr_state <= next_state;
+            end if;
         end if;
     end process;
     
 --calculate next state based on inputs --
-    process(clk,curr_state) begin
-        next_state <= curr_state; --default is maintaining state --
+    process(clk, curr_state) begin
+       -- next_state <= curr_state; --default is maintaining state --
         if clk'event and clk = '1' then
-            if (buttons(0) = '1') then
+            if (buttons(0) = '1' and not (curr_state = FINAL)) then
                 next_state <= RST;
             else 
                 case curr_state is
@@ -82,7 +88,7 @@ begin
                             else
                                 next_state <= SHIFT;
                             end if;
-                        else
+                        elsif (buttons(4 downto 1) = "1000") then
                             if switch = '0' then
                                 next_state <= LOAD1;
                             else
@@ -106,7 +112,7 @@ begin
                     when RST     =>
                         next_state <= FINAL;
                     when others  =>  -- FINAL --
-                        if ((buttons(4 downto 1) ="0000")and(switch = '0')) then
+                        if ((buttons(4 downto 1) ="0000")) then
                             next_state <= INITIAL;
                         end if;
                 end case;
