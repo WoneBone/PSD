@@ -28,7 +28,7 @@ begin
 	-- Pre-Regs
 	r1_sg 		<= signed(register1); 
 	--muxes
-	mux_r 		<= data_in(9) & data_in(9) & data_in(9) & data_in(9) & data_in(9) & data_in(9) & signed(data_in) when sel_mux(1) = '1'  else signed(mux_a);
+	mux_r 		<= data_in(9) & data_in(9) & data_in(9) & data_in(9) & data_in(9) & data_in(9) & signed(data_in) when sel_mux(1) = '1'  else signed(res_alu);
 	mux_a 		<= std_logic_vector(r2_sg) when sel_mux(0) = '1' else r1_sg(9) & r1_sg(9) & r1_sg(9) & r1_sg(9) & r1_sg(9) & r1_sg(9) & std_logic_vector(r1_sg);
 
 
