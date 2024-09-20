@@ -76,10 +76,11 @@ begin
             logic<= ((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg);
             res_alu<=signed(logic);
          
-        when others => 
+        when "1XX" => 
             mul <= r1_sg*r2_sg;
             res_alu <= mul(15 downto 0);
-            
+        when others =>
+            res_alu <= res_alu;      
         end case;
 end process;   
 
