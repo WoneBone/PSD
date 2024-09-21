@@ -79,44 +79,38 @@ begin
         reset <= '1' after 20 ns,
                  '0' after 40 ns;
         
-        data <= "00" & X"04" after 40  * 2 ns,
-                "00" & X"08" after 80  * 2 ns,
-                "00" & X"0E" after 140  * 2 ns,
-                "00" & X"02" after 320  * 2 ns,
-                "00" & X"05" after 360  * 2 ns;
+        data <= "00" & X"08" after 80 ns,
+                "00" & X"06" after 140 ns,
+                "00" & X"0E" after 280 ns;
+                
         
         
-        LOAD <= '1' after 40  * 2 ns,
-                '0' after 60  * 2 ns,
-                '1' after 80  * 2 ns,
-                '0' after 100  * 2 ns,
-                '1' after 140  * 2 ns,
-                '0' after 160  * 2 ns,
-                '1' after 320  * 2 ns,
-                '0' after 340  * 2 ns;
+        LOAD <= '1' after 80 ns,
+                '0' after 100 ns,
+                '1' after 140 ns,
+                '0' after 160 ns;
                 
                  
-        switch <= '1' after 80  * 2 ns,
-                  '0' after 140  * 2 ns,
-                  '1' after 200  * 2 ns,
-                  '0' after 280  * 2 ns;  
+        switch <= '1' after 120 ns,
+                  '0' after 200 ns,
+                  '1' after 340 ns,
+                  '0' after 380 ns;  
         
-        ADD_SUB <= '1' after 120  * 2 ns,
-                   '0' after 140  * 2 ns,
-                   '1' after 160  * 2 ns,
-                   '0' after 180  * 2 ns,
-                   '1' after 300  * 2 ns,
-                   '0' after 320  * 2 ns;
+        ADD_SUB <= '1' after 180 ns,
+                   '0' after 200 ns,
+                   '1' after 220 ns,
+                   '0' after 240 ns,
+                   '1' after 600 ns,
+                   '0' after 640 ns;
                    
-        LOGIC_SHIFT <= '1' after 180  * 2 ns,
-                       '0' after 200  * 2 ns,
-                       '1' after 220  * 2 ns,
-                       '0' after 240  * 2 ns;  
+        LOGIC_SHIFT <= '1' after 300 ns,
+                       '0' after 320 ns,
+                       '1' after 360 ns,
+                       '0' after 380 ns;  
         
-        MULS <= '1' after 260  * 2 ns,
-                '0' after 280  * 2 ns,
-                '1' after 340  * 2 ns,
-                '0' after 360  * 2 ns;
+        MULS <= '1' after 260 ns,
+                '0' after 280 ns;
+                
         wait;
         
     end process;
