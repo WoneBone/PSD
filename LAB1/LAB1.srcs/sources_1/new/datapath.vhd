@@ -60,19 +60,19 @@ begin
 	case sel_alu is
         when "000"=>
             res_alu <= r1_sg-r2_sg;
-			mul <= others => 0;
+			mul <= (others => '0');
             
         when "001" =>
             res_alu <= r1_sg+r2_sg;
-			mul <= others => 0;
+			mul <= (others => '0');
             
         when "010"=>
             res_alu <= signed((15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1));
-			mul <= others => 0;
+			mul <= (others => '0');
         
         when  "011"=> 
             res_alu <= signed(((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg));
-			mul <= others => 0;
+			mul <= (others => '0');
          
         when "1XX" => 
             mul <= r1_sg*r2_sg;
@@ -80,7 +80,7 @@ begin
 
         when others =>
             res_alu <= res_alu;      
-			mul <= others => 0;
+			mul <= (others => '0');
         end case;
 end process;   
 
