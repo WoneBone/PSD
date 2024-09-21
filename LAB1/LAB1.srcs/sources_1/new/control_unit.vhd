@@ -48,7 +48,7 @@ architecture Behavioral of control_unit is
     type fsm_states is (INITIAL ,
                         ADDS,SUBS,MULS,
                         LOGIC, SHIFT,LOAD1,LOAD2,
-                        RST,FINAL );
+                        FINAL );
     signal curr_state , next_state : fsm_states;
 begin
     
@@ -108,8 +108,6 @@ begin
                         next_state <= FINAL;
                     when LOAD2   =>
                         next_state <= FINAL;
-                    when RST     =>
-                        next_state <= FINAL;
                     when others  =>  -- FINAL --
                         if ((buttons(4 downto 1) ="0000")) then
                             next_state <= INITIAL;
@@ -147,7 +145,7 @@ begin
                     sel_mux2 <='1'; sel_mux1 <='1'; load_hold1 <='0'; load_hold2 <='1';
                     sel_alu<="XXX";
                 when others   =>  -- FINAL --
-                    sel_mux2 <='0'; sel_mux1 <='0'; load_hold1 <='0'; load_hold2 <='0';
+                    sel_mux2 <='0'; load_hold1 <='0'; load_hold2 <='0';
                     sel_alu<="000";
             end case;
         end if; 
