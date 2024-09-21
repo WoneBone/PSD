@@ -17,8 +17,6 @@ architecture behavioral of datapath is
 	signal mux_a, logic    			: std_logic_vector (15 downto 0);
 	signal register1 				: std_logic_vector (9 downto 0);
 	signal data_1, data_2 : signed(15 downto 0);
-    signal add_sub  : signed (15 downto 0);
-    signal shift : unsigned(15 downto 0);
     signal mul : signed(25 downto 0);
  
   
@@ -61,26 +59,28 @@ process(clk)
 begin
 	case sel_alu is
         when "000"=>
-            add_sub<= r1_sg-r2_sg;
-            res_alu<= add_sub;
+            res_alu <= r1_sg-r2_sg;
+			mul <= others => 0;
             
         when "001" =>
-            add_sub<= r1_sg+r2_sg;
-            res_alu<= add_sub;
+            res_alu <= r1_sg+r2_sg;
+			mul <= others => 0;
             
         when "010"=>
-            shift <= (15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1);
-            res_alu<=signed(shift);
+            res_alu <= signed((15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1));
+			mul <= others => 0;
         
         when  "011"=> 
-            logic<= ((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg);
-            res_alu<=signed(logic);
+            res_alu <= signed(((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg));
+			mul <= others => 0;
          
         when "1XX" => 
             mul <= r1_sg*r2_sg;
             res_alu <= mul(15 downto 0);
+
         when others =>
             res_alu <= res_alu;      
+			mul <= others => 0;
         end case;
 end process;   
 
