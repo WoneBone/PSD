@@ -50,38 +50,42 @@ begin
 				r2_sg <= (others => '0');
 			elsif load_hold(1) = '1' then 
 				r2_sg <= mux_r;
+			else
+			    r2_sg <= r2_sg;
 			end if;
 		end if;
 	end process;
 	
 --ALU
 process(clk)
-begin
-	case sel_alu is
-        when "000"=>
-            res_alu <= r1_sg-r2_sg;
-			mul <= (others => '0');
+    begin
+    if clk'event and clk = '1' then
+        case sel_alu is
+            when "000"=>
+                res_alu <= r1_sg-r2_sg;
+                mul <= (others => '0');
+                
+            when "001" =>
+                res_alu <= r1_sg+r2_sg;
+                mul <= (others => '0');
+                
+            when "010"=>
+                res_alu <= signed((15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1));
+                mul <= (others => '0');
             
-        when "001" =>
-            res_alu <= r1_sg+r2_sg;
-			mul <= (others => '0');
-            
-        when "010"=>
-            res_alu <= signed((15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1));
-			mul <= (others => '0');
-        
-        when  "011"=> 
-            res_alu <= signed(((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg));
-			mul <= (others => '0');
-         
-        when "1XX" => 
-            mul <= r1_sg*r2_sg;
-            res_alu <= mul(15 downto 0);
-
-        when others =>
-            res_alu <= res_alu;      
-			mul <= (others => '0');
-        end case;
+            when  "011"=> 
+                res_alu <= signed(((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg));
+                mul <= (others => '0');
+             
+            when "1XX" => 
+                mul <= r1_sg*r2_sg;
+                res_alu <= mul(15 downto 0);
+    
+            when others =>
+                res_alu <= res_alu;      
+                mul <= (others => '0');
+            end case;
+    end if;
 end process;   
 
 
