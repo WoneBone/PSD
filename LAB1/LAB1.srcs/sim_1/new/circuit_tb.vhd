@@ -80,36 +80,34 @@ begin
                  '0' after 40 ns;
         
         data <= "00" & X"08" after 80 ns,
-                "00" & X"06" after 140 ns,
-                "00" & X"0E" after 280 ns;
+                "00" & X"06" after 140 ns;
+               
                 
         
         
         LOAD <= '1' after 80 ns,
                 '0' after 100 ns,
-                '1' after 140 ns,
-                '0' after 160 ns;
+                '1' after 160 ns,
+                '0' after 180 ns;
                 
                  
         switch <= '1' after 120 ns,
-                  '0' after 200 ns,
-                  '1' after 340 ns,
-                  '0' after 380 ns;  
+                  '0' after 260 ns,
+                  '1' after 520 ns;  
         
-        ADD_SUB <= '1' after 180 ns,
-                   '0' after 200 ns,
-                   '1' after 220 ns,
-                   '0' after 240 ns,
-                   '1' after 600 ns,
-                   '0' after 640 ns;
+        ADD_SUB <= '1' after 240 ns,
+                   '0' after 260 ns,
+                   '1' after 320 ns,
+                   '0' after 340 ns;
+
                    
-        LOGIC_SHIFT <= '1' after 300 ns,
-                       '0' after 320 ns,
-                       '1' after 360 ns,
-                       '0' after 380 ns;  
+        LOGIC_SHIFT <= '1' after 480 ns,
+                       '0' after 500 ns,
+                       '1' after 560 ns,
+                       '0' after 580 ns;  
         
-        MULS <= '1' after 260 ns,
-                '0' after 280 ns;
+        MULS <= '1' after 400 ns,
+                '0' after 420 ns;
                 
         wait;
         
