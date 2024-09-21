@@ -73,27 +73,30 @@ begin
         if clk'event and clk = '1' then
                 case curr_state is
                     when INITIAL =>
-                        if (buttons(4 downto 1)    ="0100") then
-                            if switch = '0' then
-                                next_state <= ADDS;
-                            else
-                                next_state <= SUBS;
-                            end if;
-                        elsif (buttons(4 downto 1) ="0010") then
-                            next_state <= MULS;
-                        elsif (buttons(4 downto 1) ="0001") then
-                            if switch = '0' then
-                                next_state <= LOGIC;
-                            else
-                                next_state <= SHIFT;
-                            end if;
-                        elsif (buttons(4 downto 1) = "1000") then
-                            if switch = '0' then
-                                next_state <= LOAD1;
-                            else
-                                next_state <= LOAD2;
-                            end if;
-                        end if;
+						case (buttons(4 downto 1)) is
+							when "0100" =>
+								if switch = '0' then
+									next_state <= ADDS;
+								else
+									next_state <= SUBS;
+								end if;
+							when "0010" =>
+								next_state <= MULS;
+							when "0001" =>
+								if switch = '0' then
+									next_state <= LOGIC;
+								else
+									next_state <= SHIFT;
+								end if;
+							when "1000" =>
+								if switch = '0' then
+									next_state <= LOAD1;
+								else
+									next_state <= LOAD2;
+								end if;
+							when others =>
+							    next_state <= curr_state;
+						end case;
                     when ADDS    =>
                         next_state <= FINAL;
                     when SUBS    =>
