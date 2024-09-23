@@ -45,10 +45,10 @@ entity control_unit is
 end control_unit;
 
 architecture Behavioral of control_unit is
-    type fsm_states is (INITIAL ,
+    type fsm_states is (INITIAL1 ,INITIAL2,
                         ADDS,SUBS,MULS,
                         LOGIC, SHIFT,LOAD1,LOAD2,
-                        FINAL );
+                        FINAL1, FINAL2 );
     signal curr_state , next_state : fsm_states;
 begin
     
@@ -60,7 +60,7 @@ begin
             if (buttons(0) = '1') then 
             	rst_1 <= '1';
             	sel_mux1 <= '1'; --default display is reg2--
-                curr_state <= FINAL;
+                curr_state <= FINAL2;
                 
         
             else 
@@ -70,29 +70,32 @@ begin
         end if;
     end process;
 
-    next_state <= ADDS    when (curr_state = INITIAL) and (buttons(4 downto 1) = "0100") and (switch = '0') else
-                  SUBS    when (curr_state = INITIAL) and (buttons(4 downto 1) = "0100") and (switch = '1') else
-                  MULS    when (curr_state = INITIAL) and (buttons(4 downto 1) = "0010") else
-                  LOGIC   when (curr_state = INITIAL) and (buttons(4 downto 1) = "0001") and (switch = '0') else
-                  SHIFT   when (curr_state = INITIAL) and (buttons(4 downto 1) = "0001") and (switch = '1') else
-                  LOAD1   when (curr_state = INITIAL) and (buttons(4 downto 1) = "1000") and (switch = '0') else
-                  LOAD2   when (curr_state = INITIAL) and (buttons(4 downto 1) = "1000") and (switch = '1') else
-                  INITIAL when ((curr_state = FINAL) or(curr_state=INITIAL) )and (buttons(4 downto 1) = "0000") else
-                  FINAL;
+    next_state <= ADDS     when (curr_state = INITIAL1 or curr_state = INITIAL2) and (buttons(4 downto 1) = "0100") and (switch = '0') else
+                  SUBS     when (curr_state = INITIAL1 or curr_state = INITIAL2) and (buttons(4 downto 1) = "0100") and (switch = '1') else
+                  MULS     when (curr_state = INITIAL1 or curr_state = INITIAL2) and (buttons(4 downto 1) = "0010") else
+                  LOGIC    when (curr_state = INITIAL1 or curr_state = INITIAL2) and (buttons(4 downto 1) = "0001") and (switch = '0') else
+                  SHIFT    when (curr_state = INITIAL1 or curr_state = INITIAL2) and (buttons(4 downto 1) = "0001") and (switch = '1') else
+                  LOAD1    when (curr_state = INITIAL1 or curr_state = INITIAL2) and (buttons(4 downto 1) = "1000") and (switch = '0') else
+                  LOAD2    when (curr_state = INITIAL1 or curr_state = INITIAL2) and (buttons(4 downto 1) = "1000") and (switch = '1') else
+                  FINAL1   when (curr_state = LOAD1) else
+                  INITIAL1 when (curr_state = FINAL1 or curr_state=INITIAL1 )and (buttons(4 downto 1) = "0000") else
+                  INITIAL2 when (curr_state = FINAL2 or curr_state=INITIAL2 )and (buttons(4 downto 1) = "0000") else
+                  FINAL2;
 
     sel_mux2   <= '1' when curr_state = LOAD2 else
                   '0';
 
-    sel_mux1   <= '0' when curr_state = LOAD1 else
+    sel_mux1   <= '0' when curr_state = LOAD1 or curr_state = FINAL1 or curr_state = INITIAL1 else
                   '1';
 
     load_hold1 <= '1' when curr_state = LOAD1 else 
                   '0';
 
-    load_hold2 <= '0' when curr_state = LOAD1 or curr_state = INITIAL or curr_state = FINAL else
+    load_hold2 <= '0' when curr_state = LOAD1 or curr_state = INITIAL1 or curr_state = INITIAL2 
+                        or curr_state = FINAL1 or curr_state = FINAL2 else
                   '1';
 
-    sel_alu    <= "000" when curr_state = INITIAL or curr_state = SUBS or curr_state = FINAL else
+    sel_alu    <= "000" when curr_state = INITIAL1 or curr_state = INITIAL2 or curr_state = SUBS or curr_state = FINAL1 or curr_state= FINAL2 else
                   "001" when curr_state = ADDS else
                   "100" when curr_state = MULS else
                   "011" when curr_state = LOGIC else
