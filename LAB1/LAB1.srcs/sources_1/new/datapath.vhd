@@ -52,11 +52,14 @@ begin
 				r2_sg <= (others => '0');
 			elsif load_hold(1) = '1' then 
 				r2_sg <= mux_r;
+			else
+			    r2_sg <= r2_sg;
 			end if;
 		end if;
 	end process;
 	
 --ALU
+
 res_alu <= r1_sg-r2_sg                                                                           when sel_alu = "000" else
 	       r1_sg+r2_sg                                                                           when sel_alu = "001" else
 		   signed((15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1))                 when sel_alu = "010" else
