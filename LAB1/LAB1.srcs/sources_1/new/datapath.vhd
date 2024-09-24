@@ -24,7 +24,7 @@ architecture behavioral of datapath is
 --not all who wander are lost ----------------------------------------------
 begin
 	-- Pre-Regs
-	r1_sg 		<= signed(register1); 
+	r1_sg 		<= signed(register1);
 	--muxes
 	mux_r 		<= data_in(9) & data_in(9) & data_in(9) & data_in(9) & data_in(9) & data_in(9) & signed(data_in) when sel_mux(1) = '1'  else signed(res_alu);
 	mux_a 		<= std_logic_vector(r2_sg) when sel_mux(0) = '1' else r1_sg(9) & r1_sg(9) & r1_sg(9) & r1_sg(9) & r1_sg(9) & r1_sg(9) & std_logic_vector(r1_sg);
@@ -41,6 +41,8 @@ begin
 			end if;
 		end if;
 	end process;
+	--mul <= r1_sg*r2_sg;
+	--res_alu <= mul(15 downto 0);
 -- Registo 2	
 
 	process(clk)
@@ -57,36 +59,18 @@ begin
 	end process;
 	
 --ALU
-process(clk)
-    begin
-    if clk'event and clk = '1' then
-        case sel_alu is
-            when "000"=>
-                res_alu <= r1_sg-r2_sg;
-                mul <= (others => '0');
-                
-            when "001" =>
-                res_alu <= r1_sg+r2_sg;
-                mul <= (others => '0');
-                
-            when "010"=>
-                res_alu <= signed((15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1));
-                mul <= (others => '0');
-            
-            when  "011"=> 
-                res_alu <= signed(((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg));
-                mul <= (others => '0');
-             
-            when "1XX" => 
-                mul <= r1_sg*r2_sg;
-                res_alu <= mul(15 downto 0);
-    
-            when others =>
-                res_alu <= res_alu;      
-                mul <= (others => '0');
-            end case;
-    end if;
-end process;   
+
+res_alu <= r1_sg-r2_sg                                                                           when sel_alu = "000" else
+	       r1_sg+r2_sg                                                                           when sel_alu = "001" else
+		   signed((15 downto 10 => r1_sg(8)) & rotate_left( unsigned(r1_sg), 1))                 when sel_alu = "010" else
+		   signed(((15 downto 10 => '0') & std_logic_vector(r1_sg)) and std_logic_vector(r2_sg)) when sel_alu = "011" else
+		   mul(15 downto 0);
+		
+mul     <= r1_sg*r2_sg                                                                           when sel_alu = "100" else
+	       r1_sg*r2_sg                                                                           when sel_alu = "101" else
+		   r1_sg*r2_sg                                                                           when sel_alu = "110" else
+	       r1_sg*r2_sg                                                                           when sel_alu = "111" else
+		   (others => '0');
 
 
 ----------------------- Daqui para baixo não mexi ---------------
