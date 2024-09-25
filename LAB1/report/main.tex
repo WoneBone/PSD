@@ -225,7 +225,145 @@ The 5 ALU operations were selected with the signals 000, 001, 010, 011 and 100. 
 
 %%%%%%%%%%%%%%%%%%%      Overall Circuit  Performance        %%%%%%%%%%%%%%%%%%%
 %Parte do Nuno
-\section{Simulation results}
+\section{Test-bench and Simulation}
+With the calculator data-path and control unit implemented, a test-bench was made to simulate and analyse the calculator performance. 
+
+Following the project assignment the buttons were associated to the operations as  can be seen in table \ref{BUTTONS}:
+
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|}
+        \hline
+		    & Switch = 0 & Switch = 1\\
+      \hline
+		  BTNL  & LOAD REG1 & LOAD REG2 \\
+    \hline
+		BTNU    & ADD & SUB\\
+    \hline
+		BTNR    & MUL & MUL \\
+    \hline
+		BTND   & AND & ROTATE LEFT\\
+    \hline
+        BTNC   & RESET & RESET \\
+        \hline
+		
+	\end{tabular}
+	\caption{Buttons assignments}
+	\label{BUTTONS}
+\end{table}
+
+To simplify the results of the behavioral simulation the table \ref{tab:simulation} was made. The clock cycle as a period of 10 ns and every instance that something is change it will appear in the simulation table. The value showned for Reg1 , Reg2, Display and $Data\textunderscore in$ are in hexadecimal format.
+
+In the beginning of the simulation $Data\textunderscore in$, Reg1, Reg2 and Display are undefined with the symbols "UUU". Reg 1 ,Reg2 and Display are then set to zero as the reset is pressed setting Reg1 and Reg2 to zero, therefore Display is also set to zero. $Data\textunderscore in$ is only defined when some value is inputted. 
+
+To test the loads 8 is loaded in Reg1 by pressing BTNL, this process also displays 8 in the Display. Then switch is activated to load 6 in Reg2 by pressing BTNL, also then displaying 6 in the Display.
+
+With the initial numbers loaded we then test all the operation. Starting by subtracting 6 to 8 and placing the result (2) in Reg2. We then add 8 with 2 and store the result, A(10 in decimal), in Reg2. The next operation done is multiplication between 8 and a , resulting with the value 50 (80 in decimal) stored in Reg2. The operation And , our logic operation, is then done between 8 and 50 saving the output signal in Reg2. For the final operation we did a rotate left,our shift operation, to the number stored in Reg1(8 in decimal / 100 in binary) and saved the output in Reg2 with the value 10(16 in decimal / 1000 in binary). 
+
+All the operations were done with success and the calculator behaved as designed. Therefore we advanced to the Post-Synthesis Timing Simulation that had the same output and behaviour as the Behavioral Simulation. 
+
+Achieving the expected outcome of both simulations we then advanced to the test in the FPGA board.
+
+\begin{table}[H]
+   
+    \hskip-1.0cm\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
+    \hline
+        t(ns) & State & $Data\textunderscore in$  & Reg1 & Reg2 & Switch & BTNL & BTNU & BTNR & BTND& BTNC& Display\\
+        \hline
+        200 & Initial1 & UUU & UUU&UUU&0&0&0&0&0&0&UUU\\
+        \hline
+         220 & Initial1 & UUU & UUU&UUU&0&0&0&0&0&1&UUU\\
+        \hline
+         225 & Final2 & UUU & UUU&UUU&0&0&0&0&0&1&UUU\\
+        \hline
+        240 & Final2 & UUU & UUU&UUU&0&0&0&0&0&0&UUU\\
+        \hline
+        245 & Initial2 & UUU & 0&0&0&0&0&0&0&0&0\\
+        \hline
+        280 & Initial2 & 8 & 0&0&0&1&0&0&0&0&0\\
+        \hline
+        285 & LOAD1 & 8 & 0&0&0&1&0&0&0&0&0\\
+        \hline
+        295 & Final1 & 8 & 8&0&0&1&0&0&0&0&8\\
+        \hline
+        300 & Final1 & 8 & 8&0&0&0&0&0&0&0&8\\
+        \hline
+        305 & Initial1 & 8 & 8&0&0&0&0&0&0&0&8\\
+        \hline
+        320 & Initial1 & 8 & 8&0&1&0&0&0&0&0&8\\
+        \hline
+        340 & Initial1 & 6 & 8&0&1&0&0&0&0&0&8\\
+        \hline
+        360 & Initial1 & 6 & 8&0&1&1&0&0&0&0&8\\
+        \hline
+        365 & LOAD2 & 6 & 8&0&1&1&0&0&0&0&0\\
+        \hline
+        375 & Final2 & 6 & 8&6&1&1&0&0&0&0&6\\
+        \hline
+        380 & Final2 & 6 & 8&6&1&0&0&0&0&0&6\\
+        \hline
+        385 & Initial2 & 6 & 8&6&1&0&0&0&0&0&6\\
+        \hline
+        440 & Initial2 & 6 & 8&6&1&0&1&0&0&0&6\\
+        \hline
+        445 & Subs & 6 & 8&6&1&0&1&0&0&0&6\\
+        \hline
+        455 & Final2 & 6 & 8&2&1&0&1&0&0&0&2\\
+        \hline
+        460 & Final2 & 6 & 8&2&0&0&0&0&0&0&2\\
+        \hline
+        465 & Initial2 & 6 & 8&2&0&0&0&0&0&0&2\\
+        \hline
+        520 & Initial2 & 6 & 8&2&0&0&1&0&0&0&2\\
+        \hline
+        525 & Adds& 6 & 8&2&0&0&1&0&0&0&2\\
+        \hline
+        535 & Final2& 6 & 8&A&0&0&1&0&0&0&A\\
+        \hline
+        540 & Final2& 6 & 8&A&0&0&0&0&0&0&A\\
+        \hline
+        545 & Initial2& 6 & 8&A&0&0&0&0&0&0&A\\
+        \hline
+        600 & Initial2& 6 & 8&A&0&0&0&1&0&0&A\\
+        \hline
+        605 & Muls& 6 & 8&A&0&0&0&1&0&0&A\\
+        \hline
+        615 & Final2& 6 & 8&50&0&0&0&1&0&0&50\\
+        \hline
+        620 & Final2& 6 & 8&50&0&0&0&0&0&0&50\\
+        \hline
+        625 & Initial2& 6 & 8&50&0&0&0&0&0&0&50\\
+        \hline
+        680 & Initial2& 6 & 8&50&0&0&0&0&1&0&50\\
+        \hline
+        685 & Logic& 6 & 8&50&0&0&0&0&1&0&50\\
+        \hline
+        695 & Final2& 6 & 8&0&0&0&0&0&1&0&0\\
+        \hline
+        700 & Final2& 6 & 8&0&0&0&0&0&0&0&0\\
+        \hline
+        705 & Initial2& 6 & 8&0&0&0&0&0&0&0&0\\
+        \hline
+        720 & Initial2& 6 & 8&0&1&0&0&0&0&0&0\\
+        \hline
+        760 & Initial2& 6 & 8&0&1&0&0&0&1&0&0\\
+        \hline
+        765 & Shift& 6 & 8&0&1&0&0&0&1&0&0\\
+        \hline
+        775 & Final2& 6 & 8&10&1&0&0&0&1&0&10\\
+        \hline
+        780 & Final2& 6 & 8&10&1&0&0&0&0&0&10\\
+        \hline
+        785 & Initial2& 6 & 8&10&1&0&0&0&0&0&10\\
+        \hline
+        
+    \end{tabular}
+    \caption{Simulation Table}
+    \label{tab:simulation}
+     
+\end{table}
+
+
 
 \section{Physical implementation results}
 
@@ -236,3 +374,4 @@ The 5 ALU operations were selected with the signals 000, 001, 010, 011 and 100. 
 
 
 \end{document}
+
