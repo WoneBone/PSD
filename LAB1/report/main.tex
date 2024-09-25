@@ -164,7 +164,7 @@ unit to integrate the design with the FPGA(Basys3 Digilent development board) wh
 
 The datapath component is the main processing unit of the circuit. It follows the schematic present in the lab assignment document, which has been modified in \ref{fig:datapath} to also show the input control signals of the component.
 
-\begin{figure}[H]
+\begin{figure}[]
 	\centering
 	\begin{subfigure}{0.45\textwidth} 
 		\centering
@@ -185,7 +185,7 @@ The datapath component is the main processing unit of the circuit. It follows th
 
 Both registers are positive edge triggered and are controlled by a Load/Hold bit. Their output is represented in table \ref{tab:Reg}. Register 1 is a 10 bit register and register 2 is a 16 bit register. Apart from that their behaviour is the same.
 
-\begin{table}[H]
+\begin{table}[]
 	\center
 	\begin{tabular}{|c|c|c|c|}
 		\hline
@@ -204,7 +204,7 @@ The detail of the ALU block can be observed in figure \ref{fig:ALU}. Note how th
 
 The ALU's behaviour depends on the control signal "Sel\_Alu" which is a three wide control vector. The ALU expects a 10 bit and 16 bit operand as operand 1 and operand 2 respectively. Its behavious is described in table \ref{tab:ALU}. Since we are group 10, in accordance with the lab assignment our shift operation is a rotate-left and our logic operation is an AND.
 
-\begin{table}[H]
+\begin{table}[]
 	\center
 	\begin{tabular}{|c|c|c|}
 		\hline
@@ -238,7 +238,7 @@ the inputs of the circuit are push-buttons that command different operations. Th
 -preparing for next instruction.
 
 The state diagram implemented is below[\ref{fig:FSM}]:
-\begin{figure}[H]
+\begin{figure}[]
 	\centering
 	\includegraphics[width=0.55\linewidth]{Imagens/state_machine_lab1.jpg}
 	\caption{State machine for control unit}
@@ -255,7 +255,7 @@ sel\_mux1 is responsible for the display- '0' wil show the value at register1 an
 sel\_mux2 is responsible for the input of register2 - '0' will connect it to the ALU output and '1' will connect it to the data input. Only at LOAD2 will this take the value '1'. load\_hold1 is the enable for the register\_1, only at LOAD1 will it be '1'. load\_hold2 is the enable for register2. register2 is updated(enabled) at all states except INITIAL, FINAL and LOAD1.
 
 
-\begin{table}[H]
+\begin{table}[]
 	\centering
 	\begin{tabular}{cccccc}
 		STATE & sel\_mux2 & sel\_mux1 & load\_hold1 & load\_hold2 & sel\_alu\\
