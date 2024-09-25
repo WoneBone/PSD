@@ -159,10 +159,6 @@ The objective is to design and implement a simple logic-arithmetic calculator, u
 To achieve this objective a data-path , control unit and an interface
 unit to integrate the design with the FPGA(Basys3 Digilent development board) where created. 
 
-The calculator performs addition , subtraction , multiplication, AND (for logic operation), rotate-left  (for shift operation), load operation in register 1 and register 2. All the operations are done utilising an arithmetic-logic unit (ALU) , multipliers (MUL), two registers(REG's) and two multiplexers(MUX's). The calculator works with number's between -512 to 511. 
-
-The design was then tested on the FPGA to ensure that the calculator performs all the operations that it was designed for.
-
 %%%%%%%%%%%%%%%%%%%%  Datapath   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Datapath}
 
@@ -229,7 +225,7 @@ The multiplexers are both 16 bit. Since the circuit's input is 10 bits wide, sig
 The multiplexers are controlled by their respective "Sel\_Mul" control signals.
 
 %%%%%%%%%%%%%%%%%%%      Control Unit       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newpage
+
 \section{Control Unit}
 %Parte do Carlos
 For the control unit of the circuit we designed a Moore Finite State Machine.
@@ -244,7 +240,7 @@ the inputs of the circuit are push-buttons that command different operations. Th
 The state diagram implemented is below[\ref{fig:FSM}]:
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.8\linewidth]{Imagens/state_machine_lab1.jpg}
+	\includegraphics[width=0.55\linewidth]{Imagens/state_machine_lab1.jpg}
 	\caption{State machine for control unit}
 	\label{fig:FSM}
 \end{figure}
@@ -252,10 +248,6 @@ The state diagram implemented is below[\ref{fig:FSM}]:
 There is one different state for each instruction. Each instruction takes up one clock cycle so the control unit needs only maintain these operation states for only one clock cycle, after which it transitions to a final state where it waits for no input,the FINAL(avoiding more than one button or operation command at once). After all inputs have been removed(no buttons pressed) the machine transitions to INITAL where it awaits for the next instruction.Only when at the INITAL state does the machine accept commands from the user(buttons pressed).
 
 Both INITIAL and FINAL have two variations, INITIAL1/INITIAL2 and FINAL1/FINAL2. These variations allow for different registered values to be presented at the display. A LOAD1 should present the value of register\_1 at the display and LOAD2 should present the value at register\_2.
-
-The circuit implemented has one VHDL process corresponding to one register that stores the current state(curr\_state). The next state is calculated with a combinatorial logic circuit(concurrent VHDL commands). This allows the calculation of next state and transitioning at each clock cycle, a necessary feature since we expect the operation states to last only that time.
-
-Our first implementation with three VHDL processes produced two registers(curr\_state, next\_state) which made each state last for two clock cycles. Although some operations such as LOAD1 and LOAD2 were unaffected, these architecture failed to execute any arithmetic and logic operations since the command signals would last for twice as long as intended resulting in repeated operations.
 
 The commanding signals(outputs of the control unit) are 4 bits for multiplexer selection and register enabling(sel\_mux2, sel\_mux1 , load\_hold1, load\_hold2) and three bits for selecting one of 5 operations at the ALU.
 
@@ -281,50 +273,21 @@ sel\_mux2 is responsible for the input of register2 - '0' will connect it to the
 	\label{tab:my_label}
 \end{table}
 
-The 5 ALU operations were selected with the signals 000, 001, 010, 011 and 100. At first, the command MULS(100) was associated with 1XX(dont care values) but this turned out to be bad design since the datapath unit was unable to recognise signals with X. Although the control unit can use these bits for optimization of the truth tables it implements, special attention is required at the datapath inputs to avoid having unspecified situations(all possible inputs must have a specified response). For simplicity, the value of 100 at the ALU selection was associated to the MULS operation.
 
 %%%%%%%%%%%%%%%%%%%      Overall Circuit  Performance        %%%%%%%%%%%%%%%%%%%
 %Parte do Nuno
 \section{Test-bench and Simulation}
 With the calculator data-path and control unit implemented, a test-bench was made to simulate and analyse the calculator performance. 
 
-Following the project assignment the buttons were associated to the operations as  can be seen in table \ref{BUTTONS}:
-
-\begin{table}[H]
-	\centering
-	\begin{tabular}{|c|c|c|}
-        \hline
-		    & Switch = 0 & Switch = 1\\
-      \hline
-		  BTNL  & LOAD REG1 & LOAD REG2 \\
-    \hline
-		BTNU    & ADD & SUB\\
-    \hline
-		BTNR    & MUL & MUL \\
-    \hline
-		BTND   & AND & ROTATE LEFT\\
-    \hline
-        BTNC   & RESET & RESET \\
-        \hline
-		
-	\end{tabular}
-	\caption{Buttons assignments}
-	\label{BUTTONS}
-\end{table}
+Following the project assignment the buttons were associated to all operations.
 
 To simplify the results of the behavioral simulation the table \ref{tab:simulation} was made. The clock cycle as a period of 10 ns and every instance that something is change it will appear in the simulation table. The value showned for Reg1 , Reg2, Display and $Data\textunderscore in$ are in hexadecimal format.
 
 In the beginning of the simulation $Data\textunderscore in$, Reg1, Reg2 and Display are undefined with the symbols "UUU". Reg 1 ,Reg2 and Display are then set to zero as the reset is pressed setting Reg1 and Reg2 to zero, therefore Display is also set to zero. $Data\textunderscore in$ is only defined when some value is inputted. 
 
-To test the loads 8 is loaded in Reg1 by pressing BTNL, this process also displays 8 in the Display. Then switch is activated to load 6 in Reg2 by pressing BTNL, also then displaying 6 in the Display.
+All the operations were done with success and the calculator behaved as designed. Therefore we advanced to the Post-Synthesis Timing Simulation that had the same output and behaviour as the Behavioral Simulation. Achieving the expected outcome of both simulations we then advanced to the test in the FPGA board.
 
-With the initial numbers loaded we then test all the operation. Starting by subtracting 6 to 8 and placing the result (2) in Reg2. We then add 8 with 2 and store the result, A(10 in decimal), in Reg2. The next operation done is multiplication between 8 and a , resulting with the value 50 (80 in decimal) stored in Reg2. The operation And , our logic operation, is then done between 8 and 50 saving the output signal in Reg2. For the final operation we did a rotate left,our shift operation, to the number stored in Reg1(8 in decimal / 100 in binary) and saved the output in Reg2 with the value 10(16 in decimal / 1000 in binary). 
-
-All the operations were done with success and the calculator behaved as designed. Therefore we advanced to the Post-Synthesis Timing Simulation that had the same output and behaviour as the Behavioral Simulation. 
-
-Achieving the expected outcome of both simulations we then advanced to the test in the FPGA board.
-
-\begin{table}[H]
+\begin{table}[]
    
     \hskip-1.0cm\begin{tabular}{|l|l|l|l|l|l|l|l|l|l|l|l|}
     \hline
