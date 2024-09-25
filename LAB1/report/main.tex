@@ -422,16 +422,26 @@ Achieving the expected outcome of both simulations we then advanced to the test 
 
 \section{Physical implementation results}
 
+After verifying that the developed project behaves according to what was asked we proceeded to the implementation.
+To do this we instantiated our circuit component inside the FPGA\_io file and connected the circuits accordingly. After running synthesis and implementation it was only a matter of sending the generated bit stream to the FPGA.\\
+
+On the board the ten switches to the right of the board where used as inputs, while the switch furthest to the left was used as the "Switch" mentioned previously that alters the operation of the buttons. The buttons where connect as described in the lab assignment.\\
+
+When on the board, we observed a slight deviation from the simulation. When loading to register 1 the expected behaviour was to display the value of register 1. That was not the case. The FPGA display always displays the value of register 2. That was the only discrepancy observed.
+
 %%%%%%%%%%%%%%%%%%%      Conclusion                  %%%%%%%%%%%%%%%%%%%%%%%%%%%
 %Mais parte do Nuno
 \section{Conclusion}
 
-Through this laboratory we successfully integrated a datapath and control unit components to achieve a functioning basic calculator that was according to specifications.
+Through this laboratory we successfully integrated a datapath and control unit components to achieve a functioning basic calculator that was according to specifications.\\
 
-We integrated both components using a hierarchical structure and a "circuit" component that correctly connects the datapath and control unit.
+We integrated both components using a hierarchical structure and a "circuit" component that correctly connects the datapath and the control unit.\\
 
-We simulated the final circuit to test if its behaviour was as designed. This allowed us to find errors in our design and correct them in timely manner.
+We simulated the final circuit to test if its behaviour was as designed. This allowed us to find errors in our design and correct them in timely manner.\\
 
+When in the lab we implemented our calculator on the FPGA and tested it's behaviour.\\
+
+Through this process we were able to explore how to implement different components in the VHDL, how to control an implemented design, how to test it through simulation and see it working in real time on an FPGA board.
 
 \end{document}
 
