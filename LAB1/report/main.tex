@@ -165,8 +165,63 @@ The design was then tested on the FPGA to ensure that the calculator performs al
 
 %%%%%%%%%%%%%%%%%%%%  Datapath   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Datapath}
-%Mais parte do Alexandre -
 
+The datapath component is the main processing unit of the circuit. It follows the schematic present in the lab assignment document, which has been modified in \ref{fig:datapath} to also show the input control signals of the component.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.6\linewidth]{Imagens/datapath.png}
+	\caption{Schematic of the datapath component}
+	\label{fig:datapath}
+\end{figure}
+
+The ALU block in the schematic has been implemented as follows:
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.8\linewidth]{Imagens/ALU.png}
+	\caption{Schematic of the ALU block}
+	\label{fig:ALU}
+\end{figure}
+
+Both registers are positive edge triggered and are controlled by a Load/Hold bit. Their output is represented in table \ref{tab:Reg}. Register 1 is a 10 bit register and register 2 is a 16 bit register. Apart from that their behaviour is the same.
+
+\begin{table}[H]
+	\center
+	\begin{tabular}{|c|c|c|c|}
+		\hline
+		Reset & Load/Hold & Clk        & Behaviour \\
+		\hline
+		1     & X         & $\uparrow$ & Reset     \\
+		0     & 1         & $\uparrow$ & Load      \\
+		0     & 0         & $\uparrow$ & Hold      \\
+		\hline
+	\end{tabular}
+	\caption{register behaviour table}
+	\label{tab:Reg}
+\end{table}
+
+The ALU's behaviour depends on the control signal "Sel\_Alu" which is a three wide control vector. The ALU expects a 10 bit and 16 bit operand as operand 1 and operand 2 respectively. Its behavious is described in table \ref{tab:ALU}.
+
+\begin{table}[H]
+	\center
+	\begin{tabular}{|c|c|c|}
+		\hline
+		Sel\_ALU & Clk        & Behaviour       \\
+		\hline
+		1XX     & $\uparrow$ & $A \times B$ \\
+		000     & $\uparrow$ & $A-B$        \\
+		001     & $\uparrow$ & $A+B$        \\
+		010     & $\uparrow$ & Shift        \\
+		011     & $\uparrow$ & Logic        \\
+		\hline
+	\end{tabular}
+	\caption{ALU behaviour table. A and B refer to operand 1 and 2.}
+	\label{tab:ALU}
+\end{table}
+
+The multiplexers are both 16 bit. Since the circuit's input is 10 bits wide, signal aware padding was done on multiplexer 2's connection with the circuits input, i.e. the 6 higher order bits were made the same as the signal bit.
+The multiplexers are controlled by their respective "Sel\_Mul" control signals.
 
 %%%%%%%%%%%%%%%%%%%      Control Unit       %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newpage
