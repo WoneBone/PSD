@@ -131,7 +131,7 @@
 \end{center}
     
 \begin{flushleft}
-    \large $\boxed{\text{\bf \fontfamily{cmss}\selectfont Group 2}}$\\[4.0cm]
+    \large $\boxed{\text{\bf \fontfamily{cmss}\selectfont Group 10}}$\\[4.0cm]
 \end{flushleft}
     
 \begin{center}
@@ -201,7 +201,7 @@ Both registers are positive edge triggered and are controlled by a Load/Hold bit
 	\label{tab:Reg}
 \end{table}
 
-The ALU's behaviour depends on the control signal "Sel\_Alu" which is a three wide control vector. The ALU expects a 10 bit and 16 bit operand as operand 1 and operand 2 respectively. Its behavious is described in table \ref{tab:ALU}.
+The ALU's behaviour depends on the control signal "Sel\_Alu" which is a three wide control vector. The ALU expects a 10 bit and 16 bit operand as operand 1 and operand 2 respectively. Its behavious is described in table \ref{tab:ALU}. Since we are group 10, in accordance with the lab assignment our shift operation is a rotate-left and our logic operation is an AND.
 
 \begin{table}[H]
 	\center
@@ -288,6 +288,11 @@ The 5 ALU operations were selected with the signals 000, 001, 010, 011 and 100. 
 %Mais parte do Nuno
 \section{Conclusion}
 
+Through this laboratory we successfully integrated a datapath and control unit components to achieve a functioning basic calculator that was according to specifications.
+
+We integrated both components using a hierarchical structure and a "circuit" component that correctly connects the datapath and control unit.
+
+We simulated the final circuit to test if its behaviour was as designed. This allowed us to find errors in our design and correct them in timely manner.
 
 
 \end{document}
