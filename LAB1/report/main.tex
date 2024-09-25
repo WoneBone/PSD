@@ -170,19 +170,22 @@ The datapath component is the main processing unit of the circuit. It follows th
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.6\linewidth]{Imagens/datapath.png}
-	\caption{Schematic of the datapath component}
-	\label{fig:datapath}
+	\begin{subfigure}{0.45\textwidth} 
+		\centering
+		\includegraphics[width = \linewidth]{Imagens/datapath.png}
+		\caption{Schematic of the datapath component}
+		\label{fig:datapath}
+	\end{subfigure}
+	\begin{subfigure} {0.45\textwidth}
+		\centering
+		\includegraphics[width = \linewidth]{Imagens/ALU.png}
+		\caption{Schematic of the ALU block}
+		\label{fig:ALU}
+	\end{subfigure}
+	\caption{Datapath schematic and ALU detail.}
+	\label{fig:both}
 \end{figure}
 
-The ALU block in the schematic has been implemented as follows:
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.8\linewidth]{Imagens/ALU.png}
-	\caption{Schematic of the ALU block}
-	\label{fig:ALU}
-\end{figure}
 
 Both registers are positive edge triggered and are controlled by a Load/Hold bit. Their output is represented in table \ref{tab:Reg}. Register 1 is a 10 bit register and register 2 is a 16 bit register. Apart from that their behaviour is the same.
 
@@ -200,6 +203,8 @@ Both registers are positive edge triggered and are controlled by a Load/Hold bit
 	\caption{register behaviour table}
 	\label{tab:Reg}
 \end{table}
+
+The detail of the ALU block can be observed in figure \ref{fig:ALU}. Note how the Sel\_ALU signal affects the "Logic/Shift" and "ADD/SUB" blocks but not the MUL block. 
 
 The ALU's behaviour depends on the control signal "Sel\_Alu" which is a three wide control vector. The ALU expects a 10 bit and 16 bit operand as operand 1 and operand 2 respectively. Its behavious is described in table \ref{tab:ALU}. Since we are group 10, in accordance with the lab assignment our shift operation is a rotate-left and our logic operation is an AND.
 
