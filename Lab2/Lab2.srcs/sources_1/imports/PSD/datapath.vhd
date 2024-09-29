@@ -4,60 +4,110 @@ use IEEE.NUMERIC_STD.all;
 
 entity datapath is
   port (
-    data_in              : in  std_logic_vector (7 downto 0);
-    sel_add_sub, sel_mux : in  std_logic;
-    en_accum, en_r1      : in  std_logic;
-    clk, rst_accum       : in  std_logic;
-    res, reg1            : out std_logic_vector (7 downto 0));
+    data_in              : in  std_logic_vector (15 downto 0);
+    sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5, sel_reg6 : in std_logic_vector (1 downto 0);
+    sel_mux1, sel_mux2, sel_mux3        : in std_logic_vector (1 downto 0);
+    en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
+    clk, sel_op      : in  std_logic;
+    reg1, reg2, reg3, reg4, reg5, reg6            : out std_logic_vector (15 downto 0));
 end datapath;
 
 architecture behavioral of datapath is
-  signal res_addsub, res_and, res_alu   : std_logic_vector (7 downto 0);
-  signal res_addsub_sg, r1_sg, accum_sg : signed (7 downto 0);
-
+  signal reg_mux1,reg_mux2,reg_mux3,reg_mux4,reg_mux5,reg_mux6 : signed (15 downto 0);
+  signal mux_mul, mux_alu1, mux_alu2 : signed (15 downto 0);
+  signal res_mul1, res_mul2, res_alu : signed (15 downto 0);
+ 
   -- the next signal initialization is only considered for simulation
-  signal accum     : std_logic_vector (7 downto 0) := (others => '0');
-  -- the next signal initialization is only considered for simulation
-  signal register1 : std_logic_vector (7 downto 0) := (others => '0');
+  signal register1,register2,register3,register4,register5,register6 : signed (15 downto 0) := (others => '0');
 
 begin
-  -- adder/subtracter
-  r1_sg         <= signed(register1);
-  accum_sg      <= signed(accum);
-  res_addsub    <= std_logic_vector(res_addsub_sg);
-  res_addsub_sg <= accum_sg + r1_sg when sel_add_sub = '0' else
-                   accum_sg - r1_sg;
-
-  -- logic unit
-  res_and <= register1 and accum;
-
-  -- multiplexer
-  res_alu <= res_addsub when sel_mux = '0'
-             else res_and;
-
-  -- accumulator
-  process (clk)
-  begin
-    if clk'event and clk = '1' then
-      if rst_accum = '1' then
-        accum <= X"00";
-      elsif en_accum = '1' then
-        accum <= res_alu;
-      end if;
-    end if;
-  end process;
-
+ 
   -- register R1
   process (clk)
   begin
     if clk'event and clk = '1' then
       if en_r1 = '1' then
-        register1 <= data_in;
+        register1 <= reg_mux1;
       end if;
     end if;
   end process;
 
-  -- output
-  reg1 <= register1;
-  res  <= accum;
+ -- register R2
+ process (clk)
+  begin
+    if clk'event and clk = '1' then
+      if en_r2 = '1' then
+        register2 <= reg_mux2;
+      end if;
+    end if;
+  end process;
+  
+  --register R3
+  process (clk)
+  begin
+    if clk'event and clk = '1' then
+      if en_r3 = '1' then
+        register3 <= reg_mux3;
+      end if;
+    end if;
+  end process;
+ 
+ --register R4
+ process (clk)
+  begin
+    if clk'event and clk = '1' then
+      if en_r4 = '1' then
+        register4 <= reg_mux4;
+      end if;
+    end if;
+  end process;
+  
+  --register R5
+  process (clk)
+  begin
+    if clk'event and clk = '1' then
+      if en_r5 = '1' then
+        register5 <= reg_mux5;
+      end if;
+    end if;
+  end process;
+  
+  --register R6
+  process (clk)
+  begin
+    if clk'event and clk = '1' then
+      if en_r6 = '1' then
+        register6 <= reg_mux6;
+      end if;
+    end if;
+  end process;
+  --MUXs de operações
+  mux_mul <= register1 when sel_mux1 = "01" else
+             register3 when sel_mux1 = "10" else
+             register4 when sel_mux1 = "11" else
+             (others => '0');
+             
+  mux_alu1 <= register1 when sel_mux1 = "01" else
+              register3 when sel_mux1 = "10" else
+              register4 when sel_mux1 = "11" else 
+              (others => '0');   
+              
+ mux_alu2 <=  register2 when sel_mux2 = "01" else
+              register4 when sel_mux2 = "10" else
+              register5 when sel_mux2 = "11" else 
+              (others => '0');
+                 
+ --multiplicador 1
+ res_mul1 <= mux_mul*register2;
+ 
+ --multiplicador 2
+ res_mul2<= register5*register6;
+ 
+ --ALU
+ res_alu<= mux_alu1+mux_alu2 when sel_op='0' else
+           mux_alu2-mux_alu1 when sel_op ='1';
+ 
+      
+                 
+ 
 end behavioral;
