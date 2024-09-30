@@ -5,8 +5,8 @@ use IEEE.NUMERIC_STD.all;
 entity datapath is
   port (
     data_in              : in  std_logic_vector (15 downto 0);
-    sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5, sel_reg6 : in std_logic_vector (1 downto 0);
-    sel_mux1, sel_mux2, sel_mux3        : in std_logic_vector (1 downto 0);
+    sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : in std_logic_vector (1 downto 0);
+    sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
     en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
     clk, sel_op      : in  std_logic;
     reg1, reg2, reg3, reg4, reg5, reg6            : out std_logic_vector (15 downto 0));
@@ -15,8 +15,8 @@ end datapath;
 architecture behavioral of datapath is
   signal reg_mux1,reg_mux2,reg_mux3,reg_mux4,reg_mux5,reg_mux6 : signed (15 downto 0);
   signal mux_mul, mux_alu1, mux_alu2 : signed (15 downto 0);
-  signal res_mul1, res_mul2, res_alu : signed (15 downto 0);
- 
+  signal res_mul1, res_mul2, res_alu, res_shift : signed (15 downto 0);
+  signal mem1,mem2,mem3,mem4,mem5,mem6 : signed (15 downto 0);
   -- the next signal initialization is only considered for simulation
   signal register1,register2,register3,register4,register5,register6 : signed (15 downto 0) := (others => '0');
 
@@ -81,20 +81,46 @@ begin
       end if;
     end if;
   end process;
+  
+  --Muxs de registos 
+  reg_mux1 <= mem1 when sel_reg1 = "01" else
+              res_mul1 when sel_reg1 = "10" else
+              res_alu when sel_reg1 = "11" else
+              (others => '0');
+              
+  reg_mux2 <= mem2 when sel_reg2 = "01" else
+              res_mul1 when sel_reg2 = "10" else
+              res_alu when sel_reg2 = "11" else
+              (others => '0');            
+             
+   
+  reg_mux3 <= mem3 when sel_reg3 = "01" else
+              res_mul1 when sel_reg3 = "10" else
+              (others => '0');
+   
+  reg_mux4 <= mem4 when sel_reg4 = "01" else
+              res_alu when sel_reg4 = "10" else
+              (others => '0');  
+                
+  reg_mux5 <= mem5 when sel_reg5 = "01" else
+              res_mul2 when sel_reg5 = "10" else
+              res_shift when sel_reg5 = "11" else
+              (others => '0');
+                                              
   --MUXs de operações
-  mux_mul <= register1 when sel_mux1 = "01" else
-             register3 when sel_mux1 = "10" else
-             register4 when sel_mux1 = "11" else
+  mux_mul <= register1 when sel_mul = "01" else
+             register3 when sel_mul = "10" else
+             register4 when sel_mul = "11" else
              (others => '0');
              
-  mux_alu1 <= register1 when sel_mux1 = "01" else
-              register3 when sel_mux1 = "10" else
-              register4 when sel_mux1 = "11" else 
+  mux_alu1 <= register1 when sel_alu1 = "01" else
+              register3 when sel_alu1 = "10" else
+              register4 when sel_alu1 = "11" else 
               (others => '0');   
               
- mux_alu2 <=  register2 when sel_mux2 = "01" else
-              register4 when sel_mux2 = "10" else
-              register5 when sel_mux2 = "11" else 
+ mux_alu2 <=  register2 when sel_alu2 = "01" else
+              register4 when sel_alu2 = "10" else
+              register5 when sel_alu2 = "11" else 
               (others => '0');
                  
  --multiplicador 1
@@ -106,6 +132,9 @@ begin
  --ALU
  res_alu<= mux_alu1+mux_alu2 when sel_op='0' else
            mux_alu2-mux_alu1 when sel_op ='1';
+           
+ --shift
+ res_shift<= shift_right(register5, 2);          
  
       
                  
