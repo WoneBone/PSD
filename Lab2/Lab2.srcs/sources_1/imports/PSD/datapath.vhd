@@ -4,8 +4,8 @@ use IEEE.NUMERIC_STD.all;
 
 entity datapath is
   port (
-    data_in              : in  std_logic_vector (15 downto 0);
-    sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : in std_logic_vector (1 downto 0);
+    A, B, C, D, E, F              : in  std_logic_vector (15 downto 0);
+	sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : in std_logic_vector (1 downto 0);
     sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
     en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
     clk, sel_op      : in  std_logic;
@@ -13,10 +13,9 @@ entity datapath is
 end datapath;
 
 architecture behavioral of datapath is
-  signal reg_mux1,reg_mux2,reg_mux3,reg_mux4,reg_mux5,reg_mux6 : signed (15 downto 0);
+  signal reg_mux1,reg_mux2,reg_mux3,reg_mux4,reg_mux5 : signed (15 downto 0);
   signal mux_mul, mux_alu1, mux_alu2 : signed (15 downto 0);
   signal res_mul1, res_mul2, res_alu, res_shift : signed (15 downto 0);
-  signal mem1,mem2,mem3,mem4,mem5,mem6 : signed (15 downto 0);
   -- the next signal initialization is only considered for simulation
   signal register1,register2,register3,register4,register5,register6 : signed (15 downto 0) := (others => '0');
 
@@ -77,32 +76,32 @@ begin
   begin
     if clk'event and clk = '1' then
       if en_r6 = '1' then
-        register6 <= reg_mux6;
+        register6 <= signed(F);
       end if;
     end if;
   end process;
   
   --Muxs de registos 
-  reg_mux1 <= mem1 when sel_reg1 = "01" else
+  reg_mux1 <= signed(A) when sel_reg1 = "01" else
               res_mul1 when sel_reg1 = "10" else
               res_alu when sel_reg1 = "11" else
               (others => '0');
               
-  reg_mux2 <= mem2 when sel_reg2 = "01" else
+  reg_mux2 <= signed(B) when sel_reg2 = "01" else
               res_mul1 when sel_reg2 = "10" else
               res_alu when sel_reg2 = "11" else
               (others => '0');            
              
    
-  reg_mux3 <= mem3 when sel_reg3 = "01" else
+  reg_mux3 <= signed(C) when sel_reg3 = "01" else
               res_mul1 when sel_reg3 = "10" else
               (others => '0');
    
-  reg_mux4 <= mem4 when sel_reg4 = "01" else
+  reg_mux4 <= signed(D) when sel_reg4 = "01" else
               res_alu when sel_reg4 = "10" else
               (others => '0');  
                 
-  reg_mux5 <= mem5 when sel_reg5 = "01" else
+  reg_mux5 <= signed(E) when sel_reg5 = "01" else
               res_mul2 when sel_reg5 = "10" else
               res_shift when sel_reg5 = "11" else
               (others => '0');
