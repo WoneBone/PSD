@@ -38,7 +38,7 @@ begin
     end if;
   end process;
 
-  state_comb : process (currstate, counter)
+  state_comb : process (currstate)
   begin  --  process
 
     nextstate <= currstate;  -- by default, does not change the state.
@@ -115,7 +115,6 @@ begin
 		if counter = "0000001111" then
 			nextstate <= st_done;  
 		else
-			counter <= counter + 1;
 			nextstate <= st0;  
 		end if;
 
@@ -129,6 +128,16 @@ begin
 
     end case;
   end process;
+
+  process(counter, currstate)
+    begin
+		if currstate = st_6 then
+			counter <= counter + 1;
+		else
+			counter <= counter;
+		end if;
+	end process;
+
 
 end Behavioral;
 
