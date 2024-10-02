@@ -44,9 +44,9 @@ architecture Behavioral of circuit is
 		port (
 		clk, rst : in  std_logic;
 		sel_reg1,sel_reg2,sel_reg3 : out std_logic_vector(1 downto 0);
-		sel_reg4,sel_reg5 : out std_logic_vector(1 downto 0);
+		sel_reg5 : out std_logic_vector(1 downto 0);
 		sel_mul , sel_alu1 , sel_alu2 : out std_logic_vector(1 downto 0);
-		en1, en2, en3, en4, en5, en6 : out std_logic;
+		en1, en2, en3, en5, en6 : out std_logic;
 		sel_op, we,done :out std_logic;
 		addr 	:out std_logic_vector(9 downto 0)
 	);
@@ -87,7 +87,7 @@ architecture Behavioral of circuit is
 
 
     signal A, B, C, D, E, F              :  std_logic_vector (15 downto 0);
-    signal sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : std_logic_vector (1 downto 0);
+    signal sel_reg1, sel_reg2, sel_reg3, sel_reg5 : std_logic_vector (1 downto 0);
 	signal sel_mul, sel_alu1, sel_alu2        : std_logic_vector (1 downto 0);
 	signal en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, sel_op, we  : std_logic;
 	signal addr    :   std_logic_vector(9 downto 0);
@@ -101,12 +101,12 @@ begin
         sel_reg1 => sel_reg1,
         sel_reg2 => sel_reg2,
         sel_reg3 => sel_reg3,
-        sel_reg4 => sel_reg4,
+        sel_reg3 => sel_reg4,
         sel_reg5 => sel_reg5,
         en1 => en_r1,
         en2 => en_r2,
         en3 => en_r3,
-        en4 => en_r4,
+        en3 => en_r4,
         en5 => en_r5,
         en6 => en_r6,
         sel_mul => sel_mul,
