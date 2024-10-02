@@ -9,7 +9,7 @@ entity datapath is
     sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
     en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
     clk, sel_op      : in  std_logic;
-    reg1, reg2, reg3, reg4, reg5, reg6            : out std_logic_vector (15 downto 0));
+    reg1 			 : out std_logic_vector (15 downto 0));
 end datapath;
 
 architecture behavioral of datapath is
@@ -20,7 +20,7 @@ architecture behavioral of datapath is
   signal register1,register2,register3,register4,register5,register6 : signed (15 downto 0) := (others => '0');
 
 begin
- 
+  reg1 <= std_logic(register1);
   -- register R1
   process (clk)
   begin
