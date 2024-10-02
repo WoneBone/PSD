@@ -105,6 +105,7 @@ begin
         load_hold2=>lh(1),
         sel_alu=> alu,
         rst_1=>reset
+		done => done;
         );
      
      inst_datapath : datapath port map (
