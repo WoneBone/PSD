@@ -38,9 +38,9 @@ begin
     end if;
   end process;
 
-  state_comb : process (currstate)
+  state_comb : process (currstate,counter,clk)
   begin  --  process
-
+  if clk'event and clk = '1' then
     nextstate <= currstate;  -- by default, does not change the state.
     
 
@@ -125,17 +125,21 @@ begin
         en1<= '0'; en2<= '0'; en3<= '0'; en4<= '0'; en5<= '0'; en6<= '0';
         sel_op <= '0';
 		done <= '1';
+		we <= '0';
 
     end case;
+    end if;
   end process;
 
-  process(counter, currstate)
+  process(counter, currstate,clk)
     begin
-		if currstate = st_6 then
+    if clk'event and clk = '1' then
+		if currstate = st6 then
 			counter <= counter + 1;
 		else
 			counter <= counter;
 		end if;
+	end if;
 	end process;
 
 
