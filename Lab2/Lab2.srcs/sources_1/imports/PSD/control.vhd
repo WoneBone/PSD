@@ -14,7 +14,7 @@ entity control is
     sel_reg4,sel_reg5 : out std_logic_vector(1 downto 0);
     sel_mul , sel_alu1 , sel_alu2 : out std_logic_vector(1 downto 0);
     en1, en2, en3, en4, en5, en6 : out std_logic;
-    sel_op, we :out std_logic;
+    sel_op, we, done :out std_logic;
 	addr 	:out std_logic_vector(9 downto 0)
     );
 end control;
@@ -27,7 +27,7 @@ architecture Behavioral of control is
 begin
   addr <= std_logic_vector(counter);  
   state_reg : process (clk)
-  
+  done <= '0';
   begin
     if clk'event and clk = '1' then
       if rst = '1' then
@@ -117,6 +117,7 @@ begin
         sel_mul <=  "00"; sel_alu1 <= "00"; sel_alu2 <= "00";
         en1<= '0'; en2<= '0'; en3<= '0'; en4<= '0'; en5<= '0'; en6<= '0';
         sel_op <= '0';
+		done <= '1';
 
     end case;
   end process;

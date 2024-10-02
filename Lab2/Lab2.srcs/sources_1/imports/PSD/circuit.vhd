@@ -96,6 +96,19 @@ architecture Behavioral of circuit is
 begin
     inst_control : control port map (
         clk => clk,
+        switch=>switch,
+        buttons(0)=>rst,
+        buttons(1)=>logic_shift,
+        buttons(2)=>muls,
+        buttons(3)=>add_sub,
+        buttons(4)=>load,
+        sel_mux1=>mux_sel(0),
+        sel_mux2=>mux_sel(1),
+        load_hold1=>lh(0),
+        load_hold2=>lh(1),
+        sel_alu=> alu,
+        rst_1=>reset
+		done => done;
         rst => rst
         );
      
