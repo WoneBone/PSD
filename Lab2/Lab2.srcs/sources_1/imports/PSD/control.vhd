@@ -8,21 +8,24 @@ use IEEE.STD_LOGIC_1164.all;
 
 entity control is
   port (
-    clk ,rst : in  std_logic;
+    clk, rst : in  std_logic;
     sel_reg1,sel_reg2,sel_reg3 : out std_logic_vector(1 downto 0);
     sel_reg4,sel_reg5 : out std_logic_vector(1 downto 0);
     sel_mul , sel_alu1 , sel_alu2 : out std_logic_vector(1 downto 0);
     en1, en2, en3, en4, en5, en6 : out std_logic;
     sel_op :out std_logic
+	addr 	:out std_logic_vector(9 downto 0);
     );
 end control;
 
 architecture Behavioral of control is
   type fsm_states is (st0,st1,st2,st3,st4,st5,st_done);
   signal currstate, nextstate : fsm_states;
+  signal counter : std_logic_vector(9 downto 0) := (others => '0');
 
 begin
   state_reg : process (clk)
+  addr <= counter;
   begin
     if clk'event and clk = '1' then
       if rst = '1' then
@@ -45,6 +48,7 @@ begin
         sel_mul <=  "00"; sel_alu1 <= "00"; sel_alu2 <= "00";
         en1<= '1'; en2<= '1'; en3<= '1'; en4<= '1'; en5<= '1'; en6<= '1';
         sel_op <= '0';
+		nextstate <= st1;  .
 
       when st1 =>
         sel_reg1 <= "00"; sel_reg2 <= "00"; sel_reg3 <= "10";
@@ -52,6 +56,7 @@ begin
         sel_mul <=  "01"; sel_alu1 <= "10"; sel_alu2 <= "10";
         en1<= '0'; en2<= '0'; en3<= '1'; en4<= '1'; en5<= '1'; en6<= '0';
         sel_op <= '0';
+		nextstate <= st2;  .
 
       when st2 =>
         sel_reg1 <= "11"; sel_reg2 <= "10"; sel_reg3 <= "00";
@@ -59,6 +64,7 @@ begin
         sel_mul <=  "11"; sel_alu1 <= "01"; sel_alu2 <= "11";
         en1<= '1'; en2<= '1'; en3<= '0'; en4<= '0'; en5<= '1'; en6<= '0';
         sel_op <= '0';
+		nextstate <= st3;  .
 
       when st3 =>
         sel_reg1 <= "10"; sel_reg2 <= "11"; sel_reg3 <= "00";
@@ -66,6 +72,7 @@ begin
         sel_mul <=  "01"; sel_alu1 <= "11"; sel_alu2 <= "11";
         en1<= '1'; en2<= '1'; en3<= '0'; en4<= '0'; en5<= '0'; en6<= '0';
         sel_op <= '0';
+		nextstate <= st4;  .
 
       when st4 =>
         sel_reg1 <= "00"; sel_reg2 <= "10"; sel_reg3 <= "00";
@@ -73,6 +80,7 @@ begin
         sel_mul <=  "10"; sel_alu1 <= "00"; sel_alu2 <= "00";
         en1<= '0'; en2<= '1'; en3<= '0'; en4<= '0'; en5<= '0'; en6<= '0';
         sel_op <= '0';
+		nextstate <= st5;  .
        
        when st5 =>
         sel_reg1 <= "11"; sel_reg2 <= "00"; sel_reg3 <= "00";
@@ -80,6 +88,12 @@ begin
         sel_mul <=  "00"; sel_alu1 <= "01"; sel_alu2 <= "01";
         en1<= '1'; en2<= '0'; en3<= '0'; en4<= '0'; en5<= '0'; en6<= '0';
         sel_op <= '1';
+		if counter = "0000001111" then
+			nextstate <= st_done;  .
+		else
+			counter <= counter + 1;
+			nextstate <= st0;  .
+		end if;
 
       when st_done =>
         sel_reg1 <= "00"; sel_reg2 <= "00"; sel_reg3 <= "00";
