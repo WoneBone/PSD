@@ -38,7 +38,7 @@ begin
     end if;
   end process;
 
-  state_comb : process (currstate)
+  state_comb : process (currstate, counter)
   begin  --  process
 
     nextstate <= currstate;  -- by default, does not change the state.
