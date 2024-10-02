@@ -34,8 +34,8 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity circuit is
     port(
         clk, rst    : in std_logic;
-        done 		: out std_logic;
-        
+        done 		: out std_logic
+        );
 end circuit;
 
 architecture Behavioral of circuit is
@@ -86,38 +86,61 @@ architecture Behavioral of circuit is
 
 
 
-    signal reset : std_logic;
-    signal lh, mux_sel : std_logic_vector(1 downto 0);
-    signal alu : std_logic_vector(2 downto 0);
+    signal A, B, C, D, E, F              :  std_logic_vector (15 downto 0);
+    signal sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : std_logic_vector (1 downto 0);
+	signal sel_mul, sel_alu1, sel_alu2        : std_logic_vector (1 downto 0);
+	signal en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, sel_op, we  : std_logic;
+	signal addr    :   std_logic_vector(9 downto 0);
+	signal dataIN  :   std_logic_vector(31 downto 0);
     
 begin
-    inst_control : control_unit port map (
+    inst_control : control port map (
         clk => clk,
-        switch=>switch,
-        buttons(0)=>rst,
-        buttons(1)=>logic_shift,
-        buttons(2)=>muls,
-        buttons(3)=>add_sub,
-        buttons(4)=>load,
-        sel_mux1=>mux_sel(0),
-        sel_mux2=>mux_sel(1),
-        load_hold1=>lh(0),
-        load_hold2=>lh(1),
-        sel_alu=> alu,
-        rst_1=>reset
+        rst => rst
         );
      
      inst_datapath : datapath port map (
         clk=>clk,
-        rst=>reset,
-        data_in=>data_in,
-        display=>display,
-        load_hold(0)=>lh(0),
-        load_hold(1)=>lh(1),
-        sel_mux(0)=>mux_sel(0),
-        sel_mux(1)=>mux_sel(1),
-        sel_alu=>alu
-        );        
+        A => A,
+        B => B,
+        C => C,
+        D => D,
+        E => E,
+        F => F,
+        sel_reg1 => sel_reg1,
+        sel_reg2 => sel_reg2,
+        sel_reg3 => sel_reg3,
+        sel_reg4 => sel_reg4,
+        sel_reg5 => sel_reg5,
+        en_r1 => en_r1,
+        en_r2 => en_r2,
+        en_r3 => en_r3,
+        en_r4 => en_r4,
+        en_r5 => en_r5,
+        en_r6 => en_r6,
+        sel_mul => sel_mul,
+        sel_alu1 => sel_alu1,
+        sel_alu2 => sel_alu2,
+        sel_op => sel_op 
+        );       
         
+     inst_MemIN :MemIN port map (
+        clk=>clk,
+        A => A,
+        B => B,
+        C => C,
+        D => D,
+        E => E,
+        F => F,
+        addr => addr
+     );
+     
+     inst_memOUT :memOUT port map (
+        clk => clk,
+        addr => addr,
+        we => we,
+        dataIN => dataIN
+        
+     );
         
 end Behavioral;
