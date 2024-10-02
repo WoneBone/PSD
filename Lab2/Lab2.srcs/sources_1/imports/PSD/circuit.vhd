@@ -47,7 +47,7 @@ architecture Behavioral of circuit is
 		sel_reg4,sel_reg5 : out std_logic_vector(1 downto 0);
 		sel_mul , sel_alu1 , sel_alu2 : out std_logic_vector(1 downto 0);
 		en1, en2, en3, en4, en5, en6 : out std_logic;
-		sel_op, we :out std_logic;
+		sel_op, we,done :out std_logic;
 		addr 	:out std_logic_vector(9 downto 0)
 	);
 	end component;
@@ -60,7 +60,7 @@ architecture Behavioral of circuit is
 		sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
 		en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
 		clk, sel_op      : in  std_logic;
-		reg1 			 : out std_logic_vector (15 downto 0));
+		reg1 			 : out std_logic_vector (31 downto 0));
 	end component;
 
 
@@ -91,25 +91,30 @@ architecture Behavioral of circuit is
 	signal sel_mul, sel_alu1, sel_alu2        : std_logic_vector (1 downto 0);
 	signal en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, sel_op, we  : std_logic;
 	signal addr    :   std_logic_vector(9 downto 0);
-	signal dataIN  :   std_logic_vector(31 downto 0);
+	signal dataIN,dataOUT  :   std_logic_vector(31 downto 0);
     
 begin
     inst_control : control port map (
         clk => clk,
-        switch=>switch,
-        buttons(0)=>rst,
-        buttons(1)=>logic_shift,
-        buttons(2)=>muls,
-        buttons(3)=>add_sub,
-        buttons(4)=>load,
-        sel_mux1=>mux_sel(0),
-        sel_mux2=>mux_sel(1),
-        load_hold1=>lh(0),
-        load_hold2=>lh(1),
-        sel_alu=> alu,
-        rst_1=>reset
-		done => done;
-        rst => rst
+		done => done,
+        rst => rst,
+        sel_reg1 => sel_reg1,
+        sel_reg2 => sel_reg2,
+        sel_reg3 => sel_reg3,
+        sel_reg4 => sel_reg4,
+        sel_reg5 => sel_reg5,
+        en1 => en_r1,
+        en2 => en_r2,
+        en3 => en_r3,
+        en4 => en_r4,
+        en5 => en_r5,
+        en6 => en_r6,
+        sel_mul => sel_mul,
+        sel_alu1 => sel_alu1,
+        sel_alu2 => sel_alu2,
+        sel_op => sel_op,
+        we => we,
+        addr => addr  
         );
      
      inst_datapath : datapath port map (
@@ -134,7 +139,9 @@ begin
         sel_mul => sel_mul,
         sel_alu1 => sel_alu1,
         sel_alu2 => sel_alu2,
-        sel_op => sel_op 
+        sel_op => sel_op,
+        reg1 => dataIN 
+        
         );       
         
      inst_MemIN :MemIN port map (
@@ -152,7 +159,8 @@ begin
         clk => clk,
         addr => addr,
         we => we,
-        dataIN => dataIN
+        dataIN => dataIN,
+        dataOUT => dataOUT
         
      );
         

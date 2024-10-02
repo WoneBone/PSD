@@ -9,7 +9,7 @@ entity datapath is
     sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
     en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
     clk, sel_op      : in  std_logic;
-    reg1 			 : out std_logic_vector (15 downto 0));
+    reg1 			 : out std_logic_vector (31 downto 0));
 end datapath;
 
 architecture behavioral of datapath is
@@ -18,9 +18,9 @@ architecture behavioral of datapath is
   signal res_mul1, res_mul2, res_alu, res_shift : signed (15 downto 0);
   -- the next signal initialization is only considered for simulation
   signal register1,register2,register3,register4,register5,register6 : signed (15 downto 0) := (others => '0');
-
+  signal mul1,mul2 :signed (31 downto 0) := (others => '0');
 begin
-  reg1 <= std_logic_vector(register1);
+  reg1 <= x"0000" & std_logic_vector(register1);
   -- register R1
   process (clk)
   begin
@@ -123,10 +123,12 @@ begin
               (others => '0');
                  
  --multiplicador 1
- res_mul1 <= mux_mul*register2;
+ mul1 <= mux_mul*register2;
+ res_mul1 <= mul1(15 downto 0);
  
  --multiplicador 2
- res_mul2<= register5*register6;
+ mul2<= register5*register6;
+ res_mul2<=mul2(15 downto 0);
  
  --ALU
  res_alu<= mux_alu1+mux_alu2 when sel_op='0' else

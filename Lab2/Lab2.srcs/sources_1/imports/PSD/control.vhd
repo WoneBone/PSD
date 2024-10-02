@@ -27,7 +27,7 @@ architecture Behavioral of control is
 begin
   addr <= std_logic_vector(counter);  
   state_reg : process (clk)
-  done <= '0';
+  
   begin
     if clk'event and clk = '1' then
       if rst = '1' then
@@ -42,6 +42,7 @@ begin
   begin  --  process
 
     nextstate <= currstate;  -- by default, does not change the state.
+    
 
     case currstate is
       when st0 =>
@@ -52,6 +53,7 @@ begin
         sel_op <= '0';
 		nextstate <= st1;  
 		we <= '0';
+		done <= '0';
 
       when st1 =>
         sel_reg1 <= "00"; sel_reg2 <= "00"; sel_reg3 <= "10";
@@ -61,6 +63,7 @@ begin
         sel_op <= '0';
 		nextstate <= st2;  
 		we <= '0';
+		done <= '0';
 
       when st2 =>
         sel_reg1 <= "11"; sel_reg2 <= "10"; sel_reg3 <= "00";
@@ -70,6 +73,7 @@ begin
         sel_op <= '0';
 		nextstate <= st3;  
 		we <= '0';
+		done <= '0';
 
       when st3 =>
         sel_reg1 <= "10"; sel_reg2 <= "11"; sel_reg3 <= "00";
@@ -79,6 +83,7 @@ begin
         sel_op <= '0';
 		nextstate <= st4;  
 		we <= '0';
+		done <= '0';
 
       when st4 =>
         sel_reg1 <= "00"; sel_reg2 <= "10"; sel_reg3 <= "00";
@@ -88,6 +93,7 @@ begin
         sel_op <= '0';
 		nextstate <= st5;  
 		we <= '0';
+		done <= '0';
        
        when st5 =>
         sel_reg1 <= "11"; sel_reg2 <= "00"; sel_reg3 <= "00";
@@ -96,6 +102,7 @@ begin
         en1<= '1'; en2<= '0'; en3<= '0'; en4<= '0'; en5<= '0'; en6<= '0';
         sel_op <= '1';
 		we <= '0';
+		done <= '0';
 		
       when st6 =>
 		sel_reg1 <= "00"; sel_reg2 <= "00"; sel_reg3 <= "00";
@@ -104,6 +111,7 @@ begin
 		en1<= '0'; en2<= '0'; en3<= '0'; en4<= '0'; en5<= '0'; en6<= '0';
 		sel_op <= '0';
 		we <= '1';
+		done <= '0';
 		if counter = "0000001111" then
 			nextstate <= st_done;  
 		else
