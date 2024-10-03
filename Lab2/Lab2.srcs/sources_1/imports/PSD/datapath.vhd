@@ -8,7 +8,7 @@ entity datapath is
 	sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : in std_logic_vector (1 downto 0);
     sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
     en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
-    clk, sel_op      : in  std_logic;
+    clk, sel_op, rst      : in  std_logic;
     reg1 			 : out std_logic_vector (31 downto 0));
 end datapath;
 
@@ -25,7 +25,9 @@ begin
   process (clk)
   begin
     if clk'event and clk = '1' then
-      if en_r1 = '1' then
+		if rst = '1' then
+			register1 <= (others => '0');
+      elsif en_r1 = '1' then
         register1 <= reg_mux1;
       end if;
     end if;
@@ -35,7 +37,9 @@ begin
  process (clk)
   begin
     if clk'event and clk = '1' then
-      if en_r2 = '1' then
+		if rst = '1' then
+			register2 <= (others => '0');
+      elsif en_r2 = '1' then
         register2 <= reg_mux2;
       end if;
     end if;
@@ -45,7 +49,9 @@ begin
   process (clk)
   begin
     if clk'event and clk = '1' then
-      if en_r3 = '1' then
+		if rst = '1' then
+			register3 <= (others => '0');
+      elsif en_r3 = '1' then
         register3 <= reg_mux3;
       end if;
     end if;
@@ -55,7 +61,9 @@ begin
  process (clk)
   begin
     if clk'event and clk = '1' then
-      if en_r4 = '1' then
+		if rst = '1' then
+			register4 <= (others => '0');
+      elsif en_r4 = '1' then
         register4 <= reg_mux4;
       end if;
     end if;
@@ -65,7 +73,9 @@ begin
   process (clk)
   begin
     if clk'event and clk = '1' then
-      if en_r5 = '1' then
+		if rst = '1' then
+			register5 <= (others => '0');
+		elsif en_r5 = '1' then
         register5 <= reg_mux5;
       end if;
     end if;
@@ -75,7 +85,9 @@ begin
   process (clk)
   begin
     if clk'event and clk = '1' then
-      if en_r6 = '1' then
+		if rst = '1' then
+			register6 <= (others => '0');
+      elsif en_r6 = '1' then
         register6 <= signed(F);
       end if;
     end if;

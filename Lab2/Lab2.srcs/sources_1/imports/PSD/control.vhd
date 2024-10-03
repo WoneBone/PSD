@@ -32,6 +32,7 @@ begin
     if clk'event and clk = '1' then
       if rst = '1' then
         currstate <= st0;
+		counter <= (others <= '0');
       else
         currstate <= nextstate;
       end if;

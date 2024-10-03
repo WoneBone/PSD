@@ -116,6 +116,7 @@ begin
         );
      
      inst_datapath : datapath port map (
+	 	rst => rst,
         clk=>clk,
         A => A,
         B => B,
