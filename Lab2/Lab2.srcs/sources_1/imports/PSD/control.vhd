@@ -103,6 +103,7 @@ begin
         sel_op <= '1';
 		we <= '0';
 		done <= '0';
+		nextstate <= st6; 
 		
       when st6 =>
 		sel_reg1 <= "00"; sel_reg2 <= "00"; sel_reg3 <= "00";
