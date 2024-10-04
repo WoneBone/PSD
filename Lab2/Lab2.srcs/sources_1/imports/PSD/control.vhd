@@ -20,33 +20,43 @@ entity control is
 end control;
 
 architecture Behavioral of control is
-  type fsm_states is (st0,st1,st2,st3,st4,st5, st6, st_done);
+  type fsm_states is (st0, st0_1, st1,st2,st3,st4,st5, st6, st_done);
   signal currstate, nextstate : fsm_states;
   signal counter : signed(9 downto 0) := (others => '0');
 
 begin
-  addr <= std_logic_vector(counter);  
+  
   state_reg : process (clk)
   
   begin
     if clk'event and clk = '1' then
       if rst = '1' then
         currstate <= st0;
-		counter <= (others <= '0');
+		
       else
         currstate <= nextstate;
       end if;
     end if;
   end process;
 
-  state_comb : process (currstate,counter,clk)
+  state_comb : process (currstate,counter)
   begin  --  process
-  if clk'event and clk = '1' then
+  
     nextstate <= currstate;  -- by default, does not change the state.
     
 
     case currstate is
       when st0 =>
+        sel_reg1 <= "01"; sel_reg2 <= "01"; sel_reg3 <= "01";
+        sel_reg5 <= "01";
+        sel_mul <=  "00"; sel_alu1 <= "00"; sel_alu2 <= "00";
+        en1<= '1'; en2<= '1'; en3<= '1'; en5<= '1'; en6<= '1';
+        sel_op <= '0';
+		nextstate <= st0_1;  
+		we <= '0';
+		done <= '0';
+		
+		when st0_1 =>
         sel_reg1 <= "01"; sel_reg2 <= "01"; sel_reg3 <= "01";
         sel_reg5 <= "01";
         sel_mul <=  "00"; sel_alu1 <= "00"; sel_alu2 <= "00";
@@ -130,20 +140,27 @@ begin
 		we <= '0';
 
     end case;
-    end if;
+    
   end process;
 
-  process(counter, currstate,clk)
+  process(counter, currstate,clk,rst)
     begin
     if clk'event and clk = '1' then
-		if currstate = st6 then
+		if rst='1' then
+			counter <= (others => '0');
+			--addr <= std_logic_vector(counter);
+		elsif currstate = st6 and rst='0'  then
+			
 			counter <= counter + 1;
-		else
-			counter <= counter;
+			--addr <= std_logic_vector(counter);    
+		--else 	
+			--counter <= counter;
+			--addr <= std_logic_vector(counter);  
 		end if;
 	end if;
-	end process;
-
+	
+   end process;
+addr <= std_logic_vector(counter);
 
 end Behavioral;
 

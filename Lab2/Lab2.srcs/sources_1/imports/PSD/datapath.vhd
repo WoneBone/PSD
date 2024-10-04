@@ -22,6 +22,7 @@ architecture behavioral of datapath is
 begin
 
   reg1 <= std_logic_vector(register1);
+
   -- register R1
   process (clk)
   begin
