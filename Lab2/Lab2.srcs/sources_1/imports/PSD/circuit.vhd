@@ -34,7 +34,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 entity circuit is
     port(
         clk, rst    : in std_logic;
-        done 		: out std_logic
+        done, we 		: out std_logic;
+        addr 	:out std_logic_vector(9 downto 0);
+        dataOUT : out  std_logic_vector(31 downto 0)
         );
 end circuit;
 
@@ -59,7 +61,7 @@ architecture Behavioral of circuit is
 		sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : in std_logic_vector (1 downto 0);
 		sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
 		en_r1, en_r2, en_r3, en_r4,en_r5, en_r6  : in  std_logic;
-		clk, sel_op      : in  std_logic;
+		clk, sel_op,rst      : in  std_logic;
 		reg1 			 : out std_logic_vector (31 downto 0));
 	end component;
 
@@ -89,11 +91,15 @@ architecture Behavioral of circuit is
     signal A, B, C, D, E, F              :  std_logic_vector (15 downto 0);
     signal sel_reg1, sel_reg2, sel_reg3, sel_reg5 : std_logic_vector (1 downto 0);
 	signal sel_mul, sel_alu1, sel_alu2        : std_logic_vector (1 downto 0);
-	signal en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, sel_op, we  : std_logic;
-	signal addr    :   std_logic_vector(9 downto 0);
-	signal dataIN,dataOUT  :   std_logic_vector(31 downto 0);
+	signal en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, sel_op, wen  : std_logic;
+	signal address    :   std_logic_vector(9 downto 0);
+	signal dataIN  :   std_logic_vector(31 downto 0);
     
 begin
+
+    addr <= address;
+    we <= wen;
+    
     inst_control : control port map (
         clk => clk,
 		done => done,
@@ -111,8 +117,8 @@ begin
         sel_alu1 => sel_alu1,
         sel_alu2 => sel_alu2,
         sel_op => sel_op,
-        we => we,
-        addr => addr  
+        we => wen,
+        addr => address  
         );
      
      inst_datapath : datapath port map (
@@ -151,13 +157,13 @@ begin
         D => D,
         E => E,
         F => F,
-        addr => addr
+        addr => address
      );
      
      inst_memOUT :memOUT port map (
         clk => clk,
-        addr => addr,
-        we => we,
+        addr => address,
+        we => wen,
         dataIN => dataIN,
         dataOUT => dataOUT
         

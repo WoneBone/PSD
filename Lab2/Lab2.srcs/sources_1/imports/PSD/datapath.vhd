@@ -20,7 +20,7 @@ architecture behavioral of datapath is
   signal register1,register2,register3,register4,register5,register6 : signed (15 downto 0) := (others => '0');
   signal mul1,mul2 :signed (31 downto 0) := (others => '0');
 begin
-  reg1 <= x"0000" & std_logic_vector(register1);
+  reg1 <= std_logic_vector(resize(register1, 32));
   -- register R1
   process (clk)
   begin
