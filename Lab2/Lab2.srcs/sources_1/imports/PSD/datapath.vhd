@@ -13,14 +13,15 @@ entity datapath is
 end datapath;
 
 architecture behavioral of datapath is
-  signal reg_mux1,reg_mux2,reg_mux3,reg_mux4,reg_mux5 : signed (15 downto 0);
-  signal mux_mul, mux_alu1, mux_alu2 : signed (15 downto 0);
-  signal res_mul1, res_mul2, res_alu, res_shift : signed (15 downto 0);
+  signal reg_mux1,reg_mux2,reg_mux3,reg_mux4,reg_mux5 : signed (31 downto 0);
+  signal mux_mul, mux_alu1, mux_alu2 : signed (31 downto 0);
+  signal res_mul1, res_mul2, res_alu, res_shift : signed (31 downto 0);
   -- the next signal initialization is only considered for simulation
-  signal register1,register2,register3,register4,register5,register6 : signed (15 downto 0) := (others => '0');
-  signal mul1,mul2 :signed (31 downto 0) := (others => '0');
+  signal register1,register2,register3,register4,register5,register6 : signed (31 downto 0) := (others => '0');
+  signal mul1,mul2 :signed (63 downto 0) := (others => '0');
 begin
-  reg1 <= x"0000" & std_logic_vector(register1);
+
+  reg1 <= std_logic_vector(register1);
   -- register R1
   process (clk)
   begin
@@ -88,32 +89,32 @@ begin
 		if rst = '1' then
 			register6 <= (others => '0');
       elsif en_r6 = '1' then
-        register6 <= signed(F);
+        register6 <= resize(signed(F), 32);
       end if;
     end if;
   end process;
   
   --Muxs de registos 
-  reg_mux1 <= signed(A) when sel_reg1 = "01" else
+  reg_mux1 <= resize(signed(A), 32) when sel_reg1 = "01" else
               res_mul1 when sel_reg1 = "10" else
               res_alu when sel_reg1 = "11" else
               (others => '0');
               
-  reg_mux2 <= signed(B) when sel_reg2 = "01" else
+  reg_mux2 <= resize(signed(B), 32) when sel_reg2 = "01" else
               res_mul1 when sel_reg2 = "10" else
               res_alu when sel_reg2 = "11" else
               (others => '0');            
              
    
-  reg_mux3 <= signed(C) when sel_reg3 = "01" else
+  reg_mux3 <= resize(signed(C), 32) when sel_reg3 = "01" else
               res_mul1 when sel_reg3 = "10" else
               (others => '0');
    
-  reg_mux4 <= signed(D) when sel_reg4 = "01" else
+  reg_mux4 <= resize(signed(D), 32) when sel_reg4 = "01" else
               res_alu when sel_reg4 = "10" else
               (others => '0');  
                 
-  reg_mux5 <= signed(E) when sel_reg5 = "01" else
+  reg_mux5 <= resize(signed(E), 32) when sel_reg5 = "01" else
               res_mul2 when sel_reg5 = "10" else
               res_shift when sel_reg5 = "11" else
               (others => '0');
@@ -136,11 +137,11 @@ begin
                  
  --multiplicador 1
  mul1 <= mux_mul*register2;
- res_mul1 <= mul1(15 downto 0);
+ res_mul1 <= mul1(31 downto 0);
  
  --multiplicador 2
  mul2<= register5*register6;
- res_mul2<=mul2(15 downto 0);
+ res_mul2<=mul2(31 downto 0);
  
  --ALU
  res_alu<= mux_alu1+mux_alu2 when sel_op='0' else
