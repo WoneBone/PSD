@@ -123,7 +123,7 @@
 \newpage
 
 \section{Introduction}
-The following report pertains to the first laboratory task of Project of Digital Systems.
+The following report pertains to the second laboratory task of Project of Digital Systems.
 
 The objective is to design a program that computes determinants utilizing
 scheduling and resource Sharing, with VHDL hardware description language and making use of simulation and logic synthesis. 
@@ -201,5 +201,10 @@ With the information obtained from the Priority List \ref{tab:list}. Considering
 	\caption{Data-Flow Graph}
 	\label{fig:sch}
 \end{figure}
+
+\section{Control Unit}
+The control unit implements a finite state machine with 5 states for each of the cycles in the list scheduling plus two states, one for loading data from memory and one for after the computations where a "done" signal is produced. A single counter is incremented to iterate over the full memory.
+
+Each state takes up one clock cycle, except for the done state which extends indefinitely. A reset signal returns the control to the first state, the counter to 0 and all registers to 0. 
 
 \end{document}
