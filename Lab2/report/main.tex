@@ -202,9 +202,16 @@ With the information obtained from the Priority List \ref{tab:list}. Considering
 
 <<<<<<< HEAD
 \section{Control Unit}
-The control unit implements a finite state machine with 5 states for each of the cycles in the list scheduling plus two states, one for loading data from memory and one for after the computations where a "done" signal is produced. A single counter is incremented to iterate over the full memory.
+The control unit implements a finite state machine with 5 states for each of the cycles in the list scheduling plus two states for loading data from memory($st0$ and $st0\_1$) and one for after all computations are complete where a "done" signal is produced. A single counter is incremented to iterate over the full memory.
 
-Each state takes up one clock cycle, except for the done state which extends indefinitely. A reset signal returns the control to the first state, the counter to 0 and all registers to 0. 
+Each state takes up one clock cycle, except for the done state which extends indefinitely. A reset signal returns the control to the first state, the counter to 0 and all registers to 0.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.55\linewidth]{Imagens/FSM_lab2.drawio.png}
+	\caption{Finite State Machine}
+	\label{fig:fsm}
+\end{figure}
 
 =======
 \section{Circuit Design}
