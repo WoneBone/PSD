@@ -260,7 +260,7 @@ For simplicity, we will only show the simulations done for MemIn1.
 
 The test-bench used is very simple. All it does is reset the circuit followed by handling the clock.
 
-The clock cycle of the circuit was set to 20ns in the constraints and the same value was used for the test-bench. This left us with a WNS of 5.431ns.
+The clock cycle of the circuit was set to 18ns in the constraints and the same value was used for the test-bench. This left us with a WNS of 3.697ns.
 
 \begin{figure}[H]
 	\centering
@@ -284,7 +284,7 @@ Figure \ref{fig:PImple} is a similar cutout, but now from the Post-Implementatio
 \section{Pipeline}
 
 We can in fact improve the circuit by employing pipeline. Using at least 5 MULs and 4 ALUs. We also need an extra 11 registers, but we no longer employ multiplexers.
-We can expect to go from a result every 7 clock cycles to a result every clock cycle. Over the given data set that would result in the 16 determinants being available after 25 clock cycles, that is 500ns. Whithout pipelining it would be 2240ns.
+We can expect to go from a result every 7 clock cycles to a result every clock cycle. Over the given data set that would result in the 16 determinants being available after 25 clock cycles, that is 450. Whithout pipelining it would be 2016ns.
 
 \begin{figure}[H]
 	\centering
