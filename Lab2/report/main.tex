@@ -200,7 +200,6 @@ With the information obtained from the Priority List \ref{tab:list}. Considering
 	\label{fig:sch}
 \end{figure}
 
-<<<<<<< HEAD
 \section{Control Unit}
 The control unit implements a finite state machine with 5 states for each of the cycles in the list scheduling plus two states for loading data from memory($st0$ and $st0\_1$) and one for after all computations are complete where a "done" signal is produced. A single counter is incremented to iterate over the full memory.
 
@@ -213,7 +212,6 @@ Each state takes up one clock cycle, except for the done state which extends ind
 	\label{fig:fsm}
 \end{figure}
 
-=======
 \section{Circuit Design}
 \subsection{Data-Path}
 To perform all the operation we designed the data-path for the circuit. In order to be efficient and use the least amount of different components we organized the data-path as can be seen in image \ref{fig:path}. 
@@ -256,6 +254,34 @@ The ALU is the component that performs more operations with different registers 
 	\label{tab:reg}
 \end{table}
 
+\section{Simulation and verification}
 
+For simplicity, we will only show the simulations done for MemIn1.
+
+The test-bench used is very simple. All it does is reset the circuit followed by handling the clock.
+
+The clock cycle of the circuit was set to 20ns in the constraints and the same value was used for the test-bench. This left us with a WNS of 5.431ns.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Imagens/Behavioral.png}
+	\caption{Behavioral simulation}
+	\label{fig:behav}
+\end{figure}
+
+Figure \ref{fig:behav} is a portion of the behavioral simulation of the circuit. We can observe the different states and the data out change as the calculations finish and write enable toggles. Notice also how this is address 3 of the memory, the final value of -536804112 is correct.
+
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{Imagens/PostImplementation.png}
+	\caption{Post Implementation Timing Simulation}
+	\label{fig:PImple}
+\end{figure}
+
+Figure \ref{fig:PImple} is a similar cutout, but now from the Post-Implementation Timing Simulation. We now can't see the states, however we can see that the write enable and data out behaviour is the same. Notice how the result of -343976512 is correct for address 2.
+
+\section{Pipeline}
+
+We can in fact improve the circuit by employing pipeline. Using at least 5 MULs and 4 ALUs. We also need an extra 11 registers, but we no longer employ multiplexers.
 \end{document}
-%>>>>>>> 50b1e89df0c05a16e54df492335767a93b1ff3ce
