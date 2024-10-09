@@ -284,4 +284,13 @@ Figure \ref{fig:PImple} is a similar cutout, but now from the Post-Implementatio
 \section{Pipeline}
 
 We can in fact improve the circuit by employing pipeline. Using at least 5 MULs and 4 ALUs. We also need an extra 11 registers, but we no longer employ multiplexers.
+We can expect to go from a result every 7 clock cycles to a result every clock cycle. Over the given data set that would result in the 16 determinants being available after 25 clock cycles, that is 500ns. Whithout pipelining it would be 2240ns.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/pipe.png}
+	\caption{Draft block diagram of the pipeline datapath}
+	\label{fig:pipe}
+\end{figure}
+
 \end{document}
