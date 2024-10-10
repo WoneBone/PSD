@@ -200,9 +200,8 @@ With the information obtained from the Priority List \ref{tab:list}. Considering
 	\label{fig:sch}
 \end{figure}
 
-\section{Control Unit}
-The control unit implements a finite state machine with 5 states for each of the cycles in the list scheduling plus two states for loading data from memory($st0$ and $st0\_1$) and one for after all computations are complete where a "done" signal is produced. A single counter is incremented to iterate over the full memory.
 
+<<<<<<< HEAD
 Each state takes up one clock cycle, except for the done state which extends indefinitely. A reset signal returns the control to the first state, the counter to 0 and all registers to 0.
 
 \begin{figure}[H]
@@ -211,6 +210,8 @@ Each state takes up one clock cycle, except for the done state which extends ind
 	\caption{Finite State Machine}
 	\label{fig:fsm}
 \end{figure}
+=======
+>>>>>>> 0e5e12d8d255503de26a2fa39376da1a2be4ba90
 
 \section{Circuit Design}
 \subsection{Data-Path}
@@ -254,6 +255,17 @@ The ALU is the component that performs more operations with different registers 
 	\label{tab:reg}
 \end{table}
 
+\subsection{Control Unit}
+The control unit implements a finite state machine with 5 states for each of the cycles in the list scheduling plus two states for loading data from memory($st0$ and $st0\_1$) and one for after all computations are complete where a "done" signal is produced. A single counter is incremented to iterate over the full memory.
+
+Each state takes up one clock cycle, except for the done state which extends indefinitely. A reset signal returns the control to the first state, the counter to 0 and all registers to 0.
+
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.55\linewidth]{Imagens/FSM_lab2.drawio.png}
+	\caption{Finite State Machine}
+	\label{fig:fsm}
+\end{figure}
 \section{Simulation and verification}
 
 For simplicity, we will only show the simulations done for MemIn1.
