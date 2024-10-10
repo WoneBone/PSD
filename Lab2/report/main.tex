@@ -284,7 +284,7 @@ Figure \ref{fig:PImple} is a similar cutout, but now from the Post-Implementatio
 \section{Pipeline}
 
 We can in fact improve the circuit by employing pipeline. Using at least 5 MULs and 4 ALUs. We also need an extra 11 registers, but we no longer employ multiplexers.
-We can expect to go from a result every 7 clock cycles to a result every clock cycle. Over the given data set that would result in the 16 determinants being available after 25 clock cycles, that is 450. Whithout pipelining it would be 2016ns.
+We can expect to go from a result every 7 clock cycles to a result every clock cycle. Over the given data set that would result in the 16 determinants being available after 25 clock cycles, that is 450. Without pipelining it would be 2016ns.
 
 \begin{figure}[H]
 	\centering
@@ -292,5 +292,16 @@ We can expect to go from a result every 7 clock cycles to a result every clock c
 	\caption{Draft block diagram of the pipeline datapath}
 	\label{fig:pipe}
 \end{figure}
+
+\section{Conclusion}
+Through this laboratory we successfully simulated a datapath, control unit(with one counter for address tracking) components and memory access.
+
+The focus of this project was to design a datapath in an efficient way, sharing physical resources(components) between various operations and reusing registers for holding different signals. This was achieved through priority listing and list scheduling.
+  
+We simulated the final circuit to test if its behaviour was as designed. This allowed us to
+find errors in our design, correct them in timely manner and fine tune the clock period to a reasonable value maintaining a positive Worst Negative Slack.
+
+Further optimizations were discussed such as pipelining and reducing the number of registers. Both solutions implied a trade-off, the former requiring more components and the latter increasing the clock period thus decreasing throughput.
+
 
 \end{document}
