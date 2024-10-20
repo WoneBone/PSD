@@ -9,10 +9,11 @@ use IEEE.NUMERIC_STD.all;
 
 entity control is
   port (
-    clk, rst : in  std_logic;
-    enReg    : out std_logic_vector(8 downto 0);
-	addr 	 : out std_logic_vector(9 downto 0);
-	we       : out std_logic_vector
+    clk, rst  : in  std_logic;
+    start_btn : in  std_logic;
+    enReg     : out std_logic_vector(8 downto 0);
+	addr 	  : out std_logic_vector(9 downto 0);
+	we        : out std_logic
     );
 end control;
 
@@ -25,14 +26,13 @@ architecture Behavioral of control is
   signal counter : signed(9 downto 0) := (others => '0'); -- initialze for simulation? --
 
 begin
-  
+
   -- store state ,transition to next state --
   state_reg : process (clk)
   begin
     if clk'event and clk = '1' then
       if rst = '1' then
         currstate <= start;
-		
       else
         currstate <= nextstate;
       end if;
@@ -40,73 +40,95 @@ begin
   end process;
 
   -- calculate next state and output values --
-  state_comb : process (currstate,counter)
+  state_comb : process (currstate,counter,start_btn)
   begin  --  process
   
     nextstate <= currstate;  -- by default, does not change the state.
-    
 
     case currstate is
       when start =>
-	    nextstate <= load11;
+        if start_btn = '0' then
+	      nextstate <= start;
+	    else
+          nextstate <= load11;
+        end if;   
 	    enReg <= "101110000";
+	    we <= '0';
 		
 	  when load11 =>
 	    nextstate <= load22;
 	    enReg <= "101110001";
+	    we <= '0';
+	    
       when load22 =>
 	    nextstate <= load12;
-	    enReg <= "101110010"; 
-
+	    enReg <= "101110010";
+	    we <= '0';
+	     
       when load12 =>
 	    nextstate <= load21;
-	    enReg <= "101110100";  
+	    enReg <= "101110100";
+	    we <= '0';
+	      
 
       when load21 =>
 	    nextstate <= muls;
-	    enReg <= "101111001"; 
+	    enReg <= "101111001";
+	    we <= '0'; 
 
       when muls =>
 	    nextstate <= subs_adds;
 	    enReg <= "101110001";
+        -- se a primeira já tiver passado
+        --ESTOU A ASSUMIR QUE ESCREVER NA MEMORIA É 1 CICLO, PODE SER PRECISO MEXER/ESTENDER	    
+	    if counter > X"04" then
+	      we <= '1';
+	    else
+	      we <= '0'; 
+	    end if;
        
       when subs_adds =>
         nextstate <= subs;
         enReg <= "101110010";
+        we <= '0';
        
       when subs =>
         nextstate <= absolutes;
         enReg <= "101110100";
+        we <= '0';
+        
         
       when absolutes =>
-        if counter > X"1F" then  --addr = 36 first non existant matrix
+        if counter > X"1F" then  --counter > 31 first non existant matrix
           nextstate <= last_add;
         else
           nextstate <= muls;
           enReg <= "111111000";
         end if;
+        we <= '0';
         
       when last_add=>
         nextstate <= done;
         enReg <= "101110000";
+        we <= '1';
         
       when done=>
         enReg <= "101110000";
+        we <= '0';
 
     end case;
     
   end process;
 
-  --  --
-  state_counter: process(counter, currstate,clk,rst)
+  -- increment counter --
+  state_counter: process(clk , currstate)
     begin
     if clk'event and clk = '1' then
-		if rst='1' then
-			counter <= (others => '0');
+		if currstate = start then
+			counter <= (0=>'1',others => '0');
 			--addr <= std_logic_vector(counter);
 		else
 			counter <= counter + 1;
-			addr <= std_logic_vector(counter);    
 		--else 	
 			--counter <= counter;
 			--addr <= std_logic_vector(counter);  
@@ -114,7 +136,8 @@ begin
 	end if;
 	
    end process;
-addr <= std_logic_vector(counter);
+  -- outside of any process, addr follows counter -- 
+  addr <= std_logic_vector(counter);
 
 end Behavioral;
 
