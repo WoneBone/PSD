@@ -6,7 +6,6 @@ entity datapath is
   port (
     r11, r12, r21, r22, i11, i12, i21, i22 : in  std_logic_vector (11 downto 0);
 	sel_reg1, sel_reg2, sel_reg3, sel_reg4, sel_reg5 : in std_logic_vector (1 downto 0);
-    sel_mul, sel_alu1, sel_alu2        : in std_logic_vector (1 downto 0);
     en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, en_r7  : in  std_logic;
     clk, rst      : in  std_logic;
     reg1 			 : out std_logic_vector (31 downto 0));
