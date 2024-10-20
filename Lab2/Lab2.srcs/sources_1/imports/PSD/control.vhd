@@ -11,7 +11,8 @@ entity control is
   port (
     clk, rst : in  std_logic;
     enReg    : out std_logic_vector(8 downto 0);
-	addr 	 : out std_logic_vector(9 downto 0)
+	addr 	 : out std_logic_vector(9 downto 0);
+	we       : out std_logic_vector
     );
 end control;
 
@@ -21,12 +22,12 @@ architecture Behavioral of control is
                       muls,subs_adds,subs, absolutes,
                       last_add,done);
   signal currstate, nextstate : fsm_states;
-  signal counter : signed(9 downto 0) := (others => '0');
+  signal counter : signed(9 downto 0) := (others => '0'); -- initialze for simulation? --
 
 begin
   
+  -- store state ,transition to next state --
   state_reg : process (clk)
-  
   begin
     if clk'event and clk = '1' then
       if rst = '1' then
@@ -38,6 +39,7 @@ begin
     end if;
   end process;
 
+  -- calculate next state and output values --
   state_comb : process (currstate,counter)
   begin  --  process
   
@@ -77,7 +79,7 @@ begin
         enReg <= "101110100";
         
       when absolutes =>
-        if addr = "100100" then  --addr = 36 first non existant matrix
+        if counter > X"1F" then  --addr = 36 first non existant matrix
           nextstate <= last_add;
         else
           nextstate <= muls;
@@ -95,16 +97,16 @@ begin
     
   end process;
 
-  process(counter, currstate,clk,rst)
+  --  --
+  state_counter: process(counter, currstate,clk,rst)
     begin
     if clk'event and clk = '1' then
 		if rst='1' then
 			counter <= (others => '0');
 			--addr <= std_logic_vector(counter);
-		elsif currstate = st6 and rst='0'  then
-			
+		else
 			counter <= counter + 1;
-			--addr <= std_logic_vector(counter);    
+			addr <= std_logic_vector(counter);    
 		--else 	
 			--counter <= counter;
 			--addr <= std_logic_vector(counter);  
