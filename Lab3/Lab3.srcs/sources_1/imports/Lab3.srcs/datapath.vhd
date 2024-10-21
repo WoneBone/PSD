@@ -222,7 +222,7 @@ begin
  
  --alus for det
  alu_detr<=(reg_sub11(24) & reg_sub11) - (reg_sub12(24) & reg_sub12);
- alu_deti<=(reg_add11(24) & reg_add11) - (reg_add12(24) & reg_sub12);
+ alu_deti<=(reg_add11(24) & reg_add11) - (reg_add12(24) & reg_add12);
  
  --sumdet process
  pre_sumdetr <= ((31 downto 26=>reg_detr(25)) & reg_detr);
