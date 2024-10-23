@@ -25,7 +25,9 @@ architecture Behavioral of control is
                       muls,subs_adds,subs, absolutes,
                       last_add,store_sumdetI,done);
   signal currstate, nextstate : fsm_states;
-  signal counter_in : signed(9 downto 0) := (others => '0'); -- initialze for simulation? --
+  signal counter_in  : signed(9 downto 0) := (others => '0'); -- initialze for simulation? --
+  signal counter_out : signed(9 downto 0) := (others => '0');
+  signal inner_we : std_logic;
 
 begin
 
@@ -55,89 +57,88 @@ begin
           nextstate <= load11;
         end if;   
 	    enReg <= "101110000";
-	    we <= '0';
+	    inner_we <= '0';
       out_mul <= "00";
 		
 	  when load11 =>
 	    nextstate <= load22;
 	    enReg <= "101110001";
-	    we <= '0';
+	    inner_we <= '0';
       out_mul <= "00";
-
 	    
       when load22 =>
 	    nextstate <= load12;
 	    enReg <= "101110010";
-	    we <= '0';
+	    inner_we <= '0';
       out_mul <= "00";
 
 	     
       when load12 =>
 	    nextstate <= load21;
 	    enReg <= "101110100";
-	    we <= '0';
+	    inner_we <= '0';
       out_mul <= "00";
 
 	      
 
       when load21 =>
 	    nextstate <= muls;
-	    enReg <= "101111001";
-	    we <= '0';
+	    enReg <= "101111000";
+	    inner_we <= '0';
       out_mul <= "00";
 
 
       when muls =>
 	    nextstate <= subs_adds;
 	    enReg <= "101110001";
-	    we <= '0';
+	    inner_we <= '0';
       out_mul <= "00";
 
        
       when subs_adds =>
         nextstate <= subs;
         enReg <= "101110010";
-        we <= '0';
+        inner_we <= '0';
         out_mul <= "00";
 
        
       when subs =>
         nextstate <= absolutes;
         enReg <= "101110100";
-        we <= '1';
+        inner_we <= '1';
         out_mul <= "00"; -- writing detR --
 
         
         
       when absolutes =>
-        if counter_in > X"1F" then  --counter > 31 first non existant matrix
+        if counter_in > X"21" then  --counter > 32 first non existant matrix
           nextstate <= last_add;
         else
           nextstate <= muls;
-          enReg <= "111111000";
         end if;
-        we <= '1';
+        enReg <= "111111000";
+        inner_we <= '1';
         out_mul <= "01"; --writing detI --
 
         
       when last_add=>
         nextstate <= store_sumdetI;
         enReg <= "101110000";
-        we <= '1';
+        inner_we <= '1';
         out_mul <= "10"; --writing sumDetR --
 
 
       when store_sumdetI=>
         nextstate <= done;
         enReg <= "101110000";
-        we <= '1';
+        inner_we <= '1';
         out_mul <= "11"; --writing sumDetI --
 
 
         
       when done=>
         enReg <= "101110000";
-        we <= '0';
+        inner_we <= '0';
         out_mul <= "00";
 
 
@@ -145,12 +146,12 @@ begin
     
   end process;
 
-  -- increment counter --
-  state_counter: process(clk , currstate)
-    begin
+  -- increment counter_in --
+  state_counter_in: process(clk , nextstate)
+  begin
     if clk'event and clk = '1' then
-		if currstate = start then
-			counter_in <= (0=>'1',others => '0');
+		if nextstate = start then
+			counter_in <= (others => '0');
 			--addr <= std_logic_vector(counter);
 		else
 			counter_in <= counter_in + 1;
@@ -159,9 +160,29 @@ begin
 			--addr <= std_logic_vector(counter);  
 		end if;
 	end if;
+	end process;
 	
-   end process;
-  -- outside of any process, addr follows counter -- 
+	state_counter_out: process(clk ,inner_we,rst)
+    begin
+    if clk'event and clk = '1' then
+		if rst = '1' then
+			counter_out <= (others => '0');
+			--addr <= std_logic_vector(counter);
+		else
+		  if inner_we = '1' then
+			counter_out <= counter_out + 4;
+		  else 	
+			counter_out <= counter_out;
+			--addr <= std_logic_vector(counter);
+		  end if;  
+		end if;
+	end if;
+	end process;
+   
+  -- outside any process, addr follows counter -- 
   addr_in <= std_logic_vector(counter_in);
+  addr_out<= std_logic_vector(counter_out);
+  --outside any process, we follows inner_we
+  we <= inner_we;
 
 end Behavioral;
