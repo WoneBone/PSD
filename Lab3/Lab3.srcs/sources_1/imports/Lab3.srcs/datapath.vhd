@@ -4,9 +4,10 @@ use IEEE.NUMERIC_STD.all;
 
 entity datapath is
   port (
+    mux : in std_logic_vector (1 downto 0);
     r11, r12, r21, r22, i11, i12, i21, i22 : in  std_logic_vector (11 downto 0);
     en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, en_r7, en_r8, en_r9  : in  std_logic;
-    out_sumdetr, out_sumdeti, out_detr, out_deti : out std_logic_vector (31 downto 0);
+    mem_out : out std_logic_vector (31 downto 0);
     clk, rst      : in  std_logic;
     count_min , count_max : out std_logic_vector(7 downto 0));
     
@@ -26,7 +27,7 @@ architecture behavioral of datapath is
   --final alu for det
   signal alu_detr,alu_deti: signed (25 downto 0) ;
   -- registrs for DET
-  signal reg_detr, reg_deti, pre_absr, pre_absi, absr,absi : signed (25 downto 0);
+  signal reg_detr, reg_deti, reg_detr2, reg_deti2, pre_absr, pre_absi, absr,absi : signed (25 downto 0);
   --register of sumdet and alu
   signal reg_sumdetR, reg_sumdetI, pre_sumdetr, pre_sumdeti, sumdetr, sumdeti : signed (31 downto 0);
   --register of absolute
@@ -40,6 +41,7 @@ architecture behavioral of datapath is
   --counter
   signal cunt, c_max, c_min : unsigned(7 downto 0);
   signal reg_c_max, reg_c_min: unsigned(7 downto 0):="00000000";
+  signal out_sumdetr, out_sumdeti, out_detr, out_deti :  std_logic_vector (31 downto 0);
 begin
   -- registers of mem in r1
   process (clk)
@@ -167,6 +169,7 @@ begin
 		    reg_absi<=(others => '0');
 		    cunt <= "10000000";
       elsif en_r8 = '1' then
+            reg_deti2<=reg_deti;
             reg_sumdetr<= sumdetr;
 		    reg_sumdeti<= sumdeti;
 		    reg_absR<=absr;
@@ -193,13 +196,25 @@ begin
 		if rst = '1' then
 		    reg_max<= (others => '0');
 		    reg_min<= (others => '0');
-		    reg_c_max<=(others => '0');
-		    reg_c_min<=(others => '0');
+		    
         else 
             reg_max <= max;
 		    reg_min <= min;
-		    reg_c_max <= c_max;
-		    reg_c_min <= c_min;  
+		     
+        end if;
+    end if;
+  end process;
+  
+  process (clk)
+  begin
+    if clk'event and clk = '1' then
+		if rst = '1' then
+		    reg_c_max<=(others => '0');
+		    reg_c_min<=(others => '0');
+        elsif comp_max(26) = '0' then
+		    reg_c_max <= cunt;
+		elsif comp_min(26) = '1'then
+		    reg_c_min <= cunt;
         end if;
     end if;
   end process;
@@ -253,20 +268,19 @@ begin
  
  min<= reg_det_1n when comp_min(26) = '1' else
            reg_min; 
- 
- c_max<= cunt when comp_max(26) = '0' else
-         c_max;   
-         
-                
-  c_min<= cunt when comp_min(26) = '1' else
-         c_min;   
- 
                              
  --mem outs
  out_sumdetr<=std_logic_vector(reg_sumdetr);
  out_sumdeti<=std_logic_vector(reg_sumdeti); 
  out_detr<=std_logic_vector(((31 downto 26=>reg_detr(25)) & reg_detr));
- out_deti<=std_logic_vector(((31 downto 26=>reg_deti(25)) & reg_deti));
+ out_deti<=std_logic_vector(((31 downto 26=>reg_deti2(25)) & reg_deti2));
  count_max<= std_logic_vector(reg_c_max);
  count_min<= std_logic_vector(reg_c_min);
+ 
+ mem_out<= out_detr when mux="00" else
+           out_deti when mux = "01" else
+           out_sumdetr when mux="10" else
+           out_sumdeti when mux="11" else 
+           (others => '0');  
+            
 end behavioral;

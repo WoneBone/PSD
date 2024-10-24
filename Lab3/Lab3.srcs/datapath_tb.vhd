@@ -43,6 +43,7 @@ architecture Behavioral of datapath_tb is
 		en_r1, en_r2, en_r3, en_r4,en_r5, en_r6, en_r7, en_r8, en_r9  : in  std_logic;
 		out_sumdetr, out_sumdeti, out_detr, out_deti : out std_logic_vector (31 downto 0);
 		clk, rst      : in  std_logic;
+		mem_out : out std_logic_vector (31 downto 0);
 		count_min , count_max : out std_logic_vector(7 downto 0));
 	end component;
 
@@ -53,14 +54,14 @@ architecture Behavioral of datapath_tb is
 
      -- Clock period definitions
     constant clk_period : time := 20 ns;
-	constant r11 : std_logic_vector (11 downto 0):= x"000";
-	constant r22 : std_logic_vector (11 downto 0):= x"000";
-	constant r12 : std_logic_vector (11 downto 0):= x"001";
-	constant r21 : std_logic_vector (11 downto 0):= x"001";
-	constant i11 : std_logic_vector (11 downto 0):= x"001";
-	constant i22 : std_logic_vector (11 downto 0):= x"001";
-	constant i21 : std_logic_vector (11 downto 0):= x"000";
-	constant i12 : std_logic_vector (11 downto 0):= x"000";
+	constant r11 : std_logic_vector (11 downto 0):= x"080";
+	constant r22 : std_logic_vector (11 downto 0):= x"040";
+	constant r12 : std_logic_vector (11 downto 0):= x"0c0";
+	constant r21 : std_logic_vector (11 downto 0):= x"040";
+	constant i11 : std_logic_vector (11 downto 0):= x"040";
+	constant i22 : std_logic_vector (11 downto 0):= x"100";
+	constant i21 : std_logic_vector (11 downto 0):= x"fc0";
+	constant i12 : std_logic_vector (11 downto 0):= x"080";
 
 begin
 	

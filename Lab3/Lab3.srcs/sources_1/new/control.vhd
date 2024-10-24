@@ -12,8 +12,8 @@ entity control is
     clk, rst  : in  std_logic;
     start_btn : in  std_logic;
     enReg     : out std_logic_vector(8 downto 0);
-	addr_in   : out std_logic_vector(9 downto 0);
-	addr_out  : out std_logic_vector(9 downto 0);
+	addr_in   : out std_logic_vector(7 downto 0);
+	addr_out  : out std_logic_vector(7 downto 0);
 	we        : out std_logic;
     out_mul   : out std_logic_vector(1 downto 0)
     );
@@ -25,8 +25,8 @@ architecture Behavioral of control is
                       muls,subs_adds,subs, absolutes,
                       last_add,store_sumdetI,done);
   signal currstate, nextstate : fsm_states;
-  signal counter_in  : signed(9 downto 0) := (others => '0'); -- initialze for simulation? --
-  signal counter_out : signed(9 downto 0) := (others => '0');
+  signal counter_in  : unsigned(7 downto 0) := (others => '0'); -- initialze for simulation? --
+  signal counter_out : unsigned(7 downto 0) := (others => '0');
   signal inner_we : std_logic;
 
 begin
