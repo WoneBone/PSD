@@ -63,9 +63,13 @@ begin
 		if rst = '1' then
 			reg_r22 <= (others => '0');
 			reg_i22 <= (others => '0');
+			reg_r11 <= (others => '0');
+			reg_i11 <= (others => '0');
       elsif en_r2 = '1' then
             reg_r22 <= signed(r22);
             reg_i22 <= signed(i22);
+            reg_r11 <= pre_reg_r11;
+            reg_i11 <= pre_reg_i11;
       end if;
     end if;
   end process;
@@ -89,13 +93,10 @@ begin
 		if rst = '1' then
 			reg_r21 <= (others => '0');
 			reg_i21 <= (others => '0');
-			reg_r11 <= (others => '0');
-			reg_i11 <= (others => '0');
+
       elsif en_r4 = '1' then
             reg_r21 <= signed(r21);
             reg_i21 <= signed(i21);
-            reg_r11 <= pre_reg_r11;
-            reg_i11 <= pre_reg_i11;
       end if;
     end if;
   end process;

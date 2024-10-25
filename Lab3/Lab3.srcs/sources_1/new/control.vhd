@@ -22,7 +22,7 @@ end control;
 architecture Behavioral of control is
   type fsm_states is (start,
                       load11 ,load22, load12 , load21,
-                      muls,subs_adds,subs, absolutes,
+                      muls, muls2, subs_adds,subs, absolutes,
                       last_add,store_sumdetI,done);
   signal currstate, nextstate : fsm_states;
   signal counter_in  : unsigned(7 downto 0) := (others => '0'); -- initialze for simulation? --
@@ -58,16 +58,16 @@ begin
         end if;   
 	    enReg <= "101110000";
 	    inner_we <= '0';
-      out_mul <= "00";
+        out_mul <= "00";
 		
 	  when load11 =>
-	    nextstate <= load22;
+	    nextstate <= load12;
 	    enReg <= "101110001";
 	    inner_we <= '0';
       out_mul <= "00";
 	    
       when load22 =>
-	    nextstate <= load12;
+	    nextstate <= muls;
 	    enReg <= "101110010";
 	    inner_we <= '0';
       out_mul <= "00";
@@ -82,7 +82,7 @@ begin
 	      
 
       when load21 =>
-	    nextstate <= muls;
+	    nextstate <= load22;
 	    enReg <= "101111000";
 	    inner_we <= '0';
       out_mul <= "00";
@@ -92,7 +92,13 @@ begin
 	    nextstate <= subs_adds;
 	    enReg <= "101110001";
 	    inner_we <= '0';
-      out_mul <= "00";
+        out_mul <= "00";
+        
+      when muls2 =>
+	    nextstate <= subs_adds;
+	    enReg <= "101110001";
+	    inner_we <= '1';
+        out_mul <= "01";
 
        
       when subs_adds =>
@@ -105,8 +111,9 @@ begin
       when subs =>
         nextstate <= absolutes;
         enReg <= "101110100";
-        inner_we <= '1';
-        out_mul <= "00"; -- writing detR --
+        inner_we <= '0';
+        out_mul <= "00";
+
 
         
         
@@ -114,11 +121,11 @@ begin
         if counter_in > X"21" then  --counter > 32 first non existant matrix
           nextstate <= last_add;
         else
-          nextstate <= muls;
+          nextstate <= muls; 
         end if;
-        enReg <= "111111000";
         inner_we <= '1';
-        out_mul <= "01"; --writing detI --
+        out_mul <= "00"; -- writing detR --
+        enReg <= "111111000";
 
         
       when last_add=>
