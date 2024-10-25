@@ -185,7 +185,8 @@ begin
     if clk'event and clk = '1' then
 		if rst = '1' then
 		    reg_det_1n<= (others => '0');
-      elsif en_r9 = '1' then
+      --elsif en_r9 = '1' then
+      else
             reg_det_1n<= det_1n;
       end if;
     end if;
@@ -212,19 +213,19 @@ begin
 		if rst = '1' then
 		    reg_c_max<=(others => '0');
 		    reg_c_min<=(others => '0');
-        else if comp_max(26) = '0' then
+        else if comp_max(26) = '0' and en_r9 = '1' then
 		        reg_c_max <= cunt;
 		    
-		     elsif comp_max(26)='1' then
+		     elsif comp_max(26)='1' and en_r9 = '1' then
 		        reg_c_max <= reg_c_max; 
 		     end if; 
 		    
-		     if comp_min(26) = '1'then
+		     if comp_min(26) = '1'and en_r9 = '1'then
 		          reg_c_min <= cunt;
 		     
-		     elsif comp_min(26) = '0' then
+		     elsif comp_min(26) = '0' and en_r9 = '1'then
 		         reg_c_min <= reg_c_min;
-		    end if;
+		     end if;
         end if;
     end if;
   end process;

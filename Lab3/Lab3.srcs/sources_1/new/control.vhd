@@ -56,26 +56,26 @@ begin
 	    else
           nextstate <= load11;
         end if;   
-	    enReg <= "101110000";
+	    enReg <= "001110000";
 	    inner_we <= '0';
         out_mul <= "00";
 		
 	  when load11 =>
 	    nextstate <= load12;
-	    enReg <= "101110001";
+	    enReg <= "001110001";
 	    inner_we <= '0';
       out_mul <= "00";
 	    
       when load22 =>
 	    nextstate <= muls;
-	    enReg <= "101110010";
+	    enReg <= "001110010";
 	    inner_we <= '0';
       out_mul <= "00";
 
 	     
       when load12 =>
 	    nextstate <= load21;
-	    enReg <= "101110100";
+	    enReg <= "001110100";
 	    inner_we <= '0';
       out_mul <= "00";
 
@@ -83,14 +83,14 @@ begin
 
       when load21 =>
 	    nextstate <= load22;
-	    enReg <= "101111000";
+	    enReg <= "001111000";
 	    inner_we <= '0';
       out_mul <= "00";
 
 
       when muls =>
 	    nextstate <= subs_adds;
-	    enReg <= "101110001";
+	    enReg <= "001110001";
 	    inner_we <= '0';
         out_mul <= "00";
         
@@ -103,14 +103,14 @@ begin
        
       when subs_adds =>
         nextstate <= subs;
-        enReg <= "101110100";
+        enReg <= "001110100";
         inner_we <= '0';
         out_mul <= "00";
 
        
       when subs =>
         nextstate <= absolutes;
-        enReg <= "101111000";
+        enReg <= "001111000";
         inner_we <= '0';
         out_mul <= "00";
 
@@ -130,26 +130,26 @@ begin
         
       when last_add=>
         nextstate <= store_sumdetR;
-        enReg <= "101110000";
+        enReg <= "001110000";
         inner_we <= '1';
         out_mul <= "01"; --writing DetI --
 
       when store_sumdetR=>
         nextstate <= store_sumdetI;
-        enReg <= "101110000";
+        enReg <= "001110000";
         inner_we <= '1';
         out_mul <= "10"; --writing sumDetR --
 
       when store_sumdetI=>
         nextstate <= done;
-        enReg <= "101110000";
+        enReg <= "001110000";
         inner_we <= '1';
         out_mul <= "11"; --writing sumDetI --
 
 
         
       when done=>
-        enReg <= "101110000";
+        enReg <= "001110000";
         inner_we <= '0';
         out_mul <= "00";
 
