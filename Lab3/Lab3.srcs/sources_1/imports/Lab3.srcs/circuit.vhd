@@ -67,6 +67,9 @@ end component;
 
 begin
 
+  dataInIm <= dataIn(11 downto 0);
+  dataInRe <= dataIn(27 downto 16);
+
   inst_datapath : datapath port map (
         clk=>clk,
         rst=>rst,

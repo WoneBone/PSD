@@ -170,7 +170,7 @@ begin
 			--addr <= std_logic_vector(counter);
 		else
 		  if inner_we = '1' then
-			counter_out <= counter_out + 4;
+			counter_out <= counter_out + 1;
 		  else 	
 			counter_out <= counter_out;
 			--addr <= std_logic_vector(counter);
