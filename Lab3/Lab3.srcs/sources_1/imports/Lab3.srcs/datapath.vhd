@@ -213,10 +213,19 @@ begin
 		if rst = '1' then
 		    reg_c_max<=(others => '0');
 		    reg_c_min<=(others => '0');
-        elsif comp_max(26) = '0' then
-		    reg_c_max <= cunt;
-		elsif comp_min(26) = '1'then
-		    reg_c_min <= cunt;
+        else if comp_max(26) = '0' then
+		        reg_c_max <= cunt;
+		    
+		     elsif comp_max(26)='1' then
+		        reg_c_max <= reg_c_max; 
+		     end if; 
+		    
+		     if comp_min(26) = '1'then
+		          reg_c_min <= cunt;
+		     
+		     elsif comp_min(26) = '0' then
+		         reg_c_min <= reg_c_min;
+		    end if;
         end if;
     end if;
   end process;
