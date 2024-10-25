@@ -40,7 +40,8 @@ architecture behavioral of datapath is
   signal reg_max, reg_min,max ,min : signed (26 downto 0);
   --counter
   signal cunt, c_max, c_min : unsigned(7 downto 0);
-  signal reg_c_max, reg_c_min: unsigned(7 downto 0):="00000000";
+  signal reg_c_max: unsigned(7 downto 0):="00000000";
+    signal  reg_c_min: unsigned(7 downto 0):="00000000";
   signal out_sumdetr, out_sumdeti, out_detr, out_deti :  std_logic_vector (31 downto 0);
 begin
   -- registers of mem in r1
@@ -196,7 +197,7 @@ begin
     if clk'event and clk = '1' then
 		if rst = '1' then
 		    reg_max<= (others => '0');
-		    reg_min<= (others => '0');
+		    reg_min<= (26 => '0', others => '1');
 		    
         else 
             reg_max <= max;
@@ -273,8 +274,8 @@ begin
  --mem outs
  out_sumdetr<=std_logic_vector(reg_sumdetr);
  out_sumdeti<=std_logic_vector(reg_sumdeti); 
- out_detr<=std_logic_vector(((31 downto 26=>reg_detr(25)) & reg_detr));
- out_deti<=std_logic_vector(((31 downto 26=>reg_deti2(25)) & reg_deti2));
+ out_detr<=std_logic_vector(((31 downto 29=>reg_detr(25)) & reg_detr & "000"));
+ out_deti<=std_logic_vector(((31 downto 29=>reg_deti2(25)) & reg_deti2 & "000"));
  count_max<= std_logic_vector(reg_c_max);
  count_min<= std_logic_vector(reg_c_min);
  
