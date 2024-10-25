@@ -23,7 +23,7 @@ architecture Behavioral of control is
   type fsm_states is (start,
                       load11 ,load22, load12 , load21,
                       muls, muls2, subs_adds,subs, absolutes,
-                      last_add,store_sumdetI,done);
+                      last_add,store_sumdetR, store_sumdetI,done);
   signal currstate, nextstate : fsm_states;
   signal counter_in  : unsigned(7 downto 0) := (others => '0'); -- initialze for simulation? --
   signal counter_out : unsigned(7 downto 0) := (others => '0');
@@ -103,14 +103,14 @@ begin
        
       when subs_adds =>
         nextstate <= subs;
-        enReg <= "101110010";
+        enReg <= "101110100";
         inner_we <= '0';
         out_mul <= "00";
 
        
       when subs =>
         nextstate <= absolutes;
-        enReg <= "101110100";
+        enReg <= "101111000";
         inner_we <= '0';
         out_mul <= "00";
 
@@ -121,19 +121,24 @@ begin
         if counter_in > X"21" then  --counter > 32 first non existant matrix
           nextstate <= last_add;
         else
-          nextstate <= muls; 
+          nextstate <= muls2; 
         end if;
         inner_we <= '1';
         out_mul <= "00"; -- writing detR --
-        enReg <= "111111000";
+        enReg <= "111110010";
 
         
       when last_add=>
+        nextstate <= store_sumdetR;
+        enReg <= "101110000";
+        inner_we <= '1';
+        out_mul <= "01"; --writing DetI --
+
+      when store_sumdetR=>
         nextstate <= store_sumdetI;
         enReg <= "101110000";
         inner_we <= '1';
         out_mul <= "10"; --writing sumDetR --
-
 
       when store_sumdetI=>
         nextstate <= done;
