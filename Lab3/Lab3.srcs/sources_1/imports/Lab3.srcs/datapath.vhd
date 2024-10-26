@@ -252,11 +252,12 @@ begin
  alu_deti<=(reg_add11(24) & reg_add11) - (reg_add12(24) & reg_add12);
  
  --sumdet process
- pre_sumdetr <= ((31 downto 26=>reg_detr(25)) & reg_detr);
- pre_sumdeti <= ((31 downto 26=>reg_detr(25)) & reg_detr);
+ pre_sumdetr <= (((31 downto 29=>reg_detr(25)) & reg_detr & "000"));
+ pre_sumdeti <= (((31 downto 29=>reg_deti(25)) & reg_deti & "000"));
  
- sumdetr<= reg_sumdetr+shift_right(pre_sumdetr,3);
- sumdeti<= reg_sumdeti+shift_right(pre_sumdeti,3);
+ sumdetr<= reg_sumdetr + pre_sumdetr;
+ sumdeti<= reg_sumdeti + pre_sumdeti;
+
       
  --abs operations
  pre_absr <= reg_detr;
@@ -273,17 +274,17 @@ begin
  
  --alu for max and min
  comp_max<= reg_det_1n - reg_max;
- comp_min<= reg_det_1n - reg_min;
+ comp_min<= reg_min - reg_det_1n;
  
  max<= reg_det_1n when comp_max(26) = '0' else 
            reg_max;
  
- min<= reg_det_1n when comp_min(26) = '1' else
+ min<= reg_det_1n when comp_min(26) = '0' else
            reg_min; 
                              
  --mem outs
- out_sumdetr<=std_logic_vector(reg_sumdetr);
- out_sumdeti<=std_logic_vector(reg_sumdeti); 
+ out_sumdetr<=std_logic_vector(shift_right(reg_sumdetr,3));
+ out_sumdeti<=std_logic_vector(shift_right(reg_sumdeti,3)); 
  out_detr<=std_logic_vector(((31 downto 29=>reg_detr(25)) & reg_detr & "000"));
  out_deti<=std_logic_vector(((31 downto 29=>reg_deti2(25)) & reg_deti2 & "000"));
  count_max<= std_logic_vector(reg_c_max);
