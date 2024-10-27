@@ -35,9 +35,8 @@ architecture behavioral of datapath is
   --register fot det_1n
   signal reg_det_1n, det_1n : signed (26 downto 0);
   --comps for max and min
-  signal comp_max, comp_min : signed (26 downto 0);
+  signal reg_max, reg_min : unsigned (26 downto 0);
    --reg max min
-  signal reg_max, reg_min,max ,min : signed (26 downto 0);
   --counter
   signal cunt, c_max, c_min : unsigned(7 downto 0);
   signal reg_c_max: unsigned(7 downto 0):="00000000";
@@ -195,41 +194,32 @@ begin
   
   process (clk)
   begin
-    if clk'event and clk = '1' then
-		if rst = '1' then
-		    reg_max<= (others => '0');
-		    reg_min<= (26 => '0', others => '1');
-		    
-        else 
-            reg_max <= max;
-		    reg_min <= min;
-		     
-        end if;
-    end if;
+       if clk'event and clk = '1' then
+            if rst = '1' then
+		      reg_max<= (others => '0');
+		      reg_min<= (others => '1');
+		      reg_c_max<=(others => '0');
+		      reg_c_min<=(others => '0');
+            else 
+                if unsigned(reg_det_1n) > reg_max  then
+                    reg_max <= unsigned(reg_det_1n);
+                    reg_c_max<= cunt;                    
+                else 
+                    reg_max<=reg_max;
+                    reg_c_max<=reg_c_max;
+                end if;
+                
+                if unsigned(reg_det_1n) < reg_min and reg_det_1n /= "000000000000000000000000000" then
+                    reg_min <= unsigned(reg_det_1n);
+                    reg_c_min<= cunt;
+                else
+                    reg_min<=reg_min;
+                    reg_c_min<=reg_c_min;
+                end if;  
+            end if;           
+       end if;
   end process;
   
-  process (clk)
-  begin
-    if clk'event and clk = '1' then
-		if rst = '1' then
-		    reg_c_max<=(others => '0');
-		    reg_c_min<=(others => '0');
-        else if comp_max(26) = '0' and en_r9 = '1' then
-		        reg_c_max <= cunt;
-		    
-		     elsif comp_max(26)='1' and en_r9 = '1' then
-		        reg_c_max <= reg_c_max; 
-		     end if; 
-		    
-		     if comp_min(26) = '1'and en_r9 = '1'then
-		          reg_c_min <= cunt;
-		     
-		     elsif comp_min(26) = '0' and en_r9 = '1'then
-		         reg_c_min <= reg_c_min;
-		     end if;
-        end if;
-    end if;
-  end process;
  
  --multiplicadores
  mul1 <= reg_r11*reg_r22;
@@ -257,8 +247,7 @@ begin
  
  sumdetr<= reg_sumdetr + pre_sumdetr;
  sumdeti<= reg_sumdeti + pre_sumdeti;
-
-      
+     
  --abs operations
  pre_absr <= reg_detr;
  pre_absi <= reg_deti;                
@@ -273,14 +262,7 @@ begin
  det_1n<= (reg_absr(25) & reg_absr) + (reg_absi(25) & reg_absi);
  
  --alu for max and min
- comp_max<= reg_det_1n - reg_max;
- comp_min<= reg_min - reg_det_1n;
- 
- max<= reg_det_1n when comp_max(26) = '0' else 
-           reg_max;
- 
- min<= reg_det_1n when comp_min(26) = '0' else
-           reg_min; 
+  
                              
  --mem outs
  out_sumdetr<=std_logic_vector(shift_right(reg_sumdetr,3));
