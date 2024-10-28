@@ -17,7 +17,7 @@
 \usepackage{caption} % Legendas
     \DeclareCaptionFont{newfont}{\fontfamily{cmss}\selectfont}
     \captionsetup{labelfont={bf, newfont}}
-\usepackage{cite} % Citações, tipo [1 - 3]
+%\usepackage{cite} % Citações, tipo [1 - 3]
 \usepackage{color} % Colorir texto
 \usepackage{fancyhdr} % Cabeçalho e rodapé
     \pagestyle{fancy}
@@ -56,6 +56,14 @@
 \definecolor{dkgreen}{rgb}{0,0.6,0}
 \definecolor{gray}{rgb}{0.5,0.5,0.5}
 
+%importar bibliografia
+\usepackage[
+backend=biber,
+style=alphabetic,
+sorting=nyt,
+]{biblatex}
+\addbibresource{refs.bib} 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               Documento                              %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -67,7 +75,7 @@
 \begin{center}
     \begin{figure}
         \vspace{-1.0cm}
-        \includegraphics[scale = 0.3, left]{Imagens/IST_A.eps} % Tipo de assinatura do IST
+        \includegraphics[scale = 0.3, left]{images/IST_A.eps} % Tipo de assinatura do IST
     \end{figure}
     \mbox{}\\[2.0cm]
     \textsc{\Huge Projeto de Sistemas Digitais}\\[2.5cm]
@@ -126,89 +134,41 @@ The following report pertains to the third laboratory task of Project of Digital
 The objective is to design a circuit that computes determinants of complex valued matrices, with VHDL hardware description language and making use of simulation and logic synthesis. The circuit is then implemented with the AMD Vivado™ tool in the Digilent Basys 3™ FPGA board. 
 
 \section{Data-flow Graph}
-To start the work a data-flow graph was made accordingly with the operations needed to compute the determinant's. The result is presented in image \ref{fig:data} corresponds to one loop iteration of the algorithm. This graph shows the serialization limitation of the sequence of operations needed and allows us to make a priority list based on the critical path.
+To start the work a data-flow graph was made accordingly with the operations needed to compute the determinant's. The result is presented in image \ref{fig:dataflow} corresponds to one loop iteration of the algorithm. This graph shows the serialization limitation of the sequence of operations needed and allows us to make a priority list based on the critical path.
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.35\linewidth]{Imagens/flowdat.drawio.png}
+	\includegraphics[width=0.35\linewidth]{images/DataFlowGraph.png}
 	\caption{Data-Flow Graph}
-	\label{fig:data}
+	\label{fig:dataflow}
 \end{figure}
 
-\section{List Scheduling}
-With the information obtained from the Priority List \ref{tab:list}. Considering that each operation requires a clock cycle and the only resources available (for arithmetic operations) are: 2 multipliers and 1 ALU (addition and subtraction). The list scheduling was done as can be seen in image \ref{fig:sch}, having all the constraints in mind and applying ASAP.
-
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.55\linewidth]{Imagens/stop.drawio.png}
+	\includegraphics[width=0.35\linewidth]{images/DataPath.png}
 	\caption{Data-Flow Graph}
-	\label{fig:sch}
+	\label{fig:datapath}
 \end{figure}
 
 
-Each state takes up one clock cycle, except for the done state which extends indefinitely. A reset signal returns the control to the first state, the counter to 0 and all registers to 0.
-
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.55\linewidth]{images/FSM_lab2.drawio.png}
+	\includegraphics[width=0.55\linewidth]{images/FSM_lab3.png}
 	\caption{Finite State Machine}
 	\label{fig:fsm}
 \end{figure}
 
 \section{Circuit Design}
 \subsection{Data-Path}
-To perform all the operation we designed the data-path for the circuit. In order to be efficient and use the least amount of different components we organized the data-path as can be seen in image \ref{fig:path}. 
 
-All register's , excluding register6, have multiplexers in their entry's to choose between memory and the operations components outputs. Register6 doesn't have a multiplexer because no value will be saved other then the letter F from memory. To better understand our implementation the table \ref{tab:reg} was made, where the register values saved in the registers are explicit.
 
-The operation components also have some multiplexers in their entrances. Mul1 only as one multiplexers in one of the entrances because the operation were organized in other that all multiplications are made with at least the value saved in register2. 
-
-Mul2 doesn't have any multiplexers because as can be seen in our data-flow graph there is only one time where there is two multiplications at the same time.
-
-The ALU is the component that performs more operations with different registers so two multiplexers are needed to perform all operations.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Imagens/Datapath.png}
-	\caption{Data-Path Graph}
-	\label{fig:path}
-\end{figure}
-
-\begin{table}[H]
-	\center
-	\begin{tabular}{|c|c|c|c|c|c|c|}
-		\hline
-		Cycle & 0 & 1& 2&3&4&5\\
-        \hline
-        R1 &A&A&M12&M12xM21&M12xM21&Det\\
-        \hline
-        R2 &B&B&M21&M22&M22xM11&M22xM11\\
-        \hline
-        R3&C&M11&M11&M11&M11&M11\\
-        \hline
-        R4&D&C+D&C+D&C+D&C+D&C+D\\
-        \hline
-        R5&E&ExF&(ExF)/4&(ExF)/4&(ExF)/4&(ExF)/4\\
-        \hline
-        R6&F&F&F&F&F&F\\
-        \hline
-	\end{tabular}
-	\caption{Register values}
-	\label{tab:reg}
-\end{table}
 
 \subsection{Control Unit}
-The control unit implements a finite state machine with 5 states for each of the cycles in the list scheduling plus two states for loading data from memory($st0$ and $st0\_1$) and one for after all computations are complete where a "done" signal is produced. A single counter is incremented to iterate over the full memory.
+The control unit implements a finite state machine with 14 states. A start state awaits for the command to begin calculations(BTNR) , followed by 5 states to fill up the pipeline, 4 states that repeat until the last matrix arrives at the datapath, 3 states to empty it and one done state where the machine and presents the results.
+Two counters keep trace of input and output memory addresses.
 
-Each state takes up one clock cycle, except for the done state which extends indefinitely. A reset signal returns the control to the first state, the counter to 0 and all registers to 0.
+Each state takes up one clock cycle, except for the start and done states which extend indefinitely. A reset signal returns the control to the start state, the counters to 0 and all registers to 0.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.55\linewidth]{Imagens/FSM_lab2.drawio.png}
-	\caption{Finite State Machine}
-	\label{fig:fsm}
-\end{figure}
-\section{Simulation and verification}
 
 For simplicity, we will only show the simulations done for MemIn1.
 
@@ -216,46 +176,22 @@ The test-bench used is very simple. All it does is reset the circuit followed by
 
 The clock cycle of the circuit was set to 18ns in the constraints and the same value was used for the test-bench. This left us with a WNS of 3.697ns.
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Imagens/Behavioral.png}
-	\caption{Behavioral simulation}
-	\label{fig:behav}
-\end{figure}
 
-Figure \ref{fig:behav} is a portion of the behavioral simulation of the circuit. We can observe the different states and the data out change as the calculations finish and write enable toggles. Notice also how this is address 3 of the memory, the final value of -536804112 is correct.
+Figure is a portion of the behavioral simulation of the circuit. We can observe the different states and the data out change as the calculations finish and write enable toggles. Notice also how this is address 3 of the memory, the final value of -536804112 is correct.
 
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{Imagens/PostImplementation.png}
-	\caption{Post Implementation Timing Simulation}
-	\label{fig:PImple}
-\end{figure}
+Figure is a similar cutout, but now from the Post-Implementation Timing Simulation. We now can't see the states, however we can see that the write enable and data out behaviour is the same. Notice how the result of -343976512 is correct for address 2.
 
-Figure \ref{fig:PImple} is a similar cutout, but now from the Post-Implementation Timing Simulation. We now can't see the states, however we can see that the write enable and data out behaviour is the same. Notice how the result of -343976512 is correct for address 2.
-
-\section{Pipeline}
-
-We can in fact improve the circuit by employing pipeline. Using at least 5 MULs and 4 ALUs. We also need an extra 11 registers, but we no longer employ multiplexers.
-We can expect to go from a result every 7 clock cycles to a result every clock cycle. Over the given data set that would result in the 16 determinants being available after 25 clock cycles, that is 450. Without pipelining it would be 2016ns.
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.7\linewidth]{images/pipe.png}
-	\caption{Draft block diagram of the pipeline datapath}
-	\label{fig:pipe}
-\end{figure}
 
 \section{Conclusion}
-Through this laboratory we successfully simulated a datapath, control unit(with one counter for address tracking) components and memory access.
+Through this laboratory we successfully simulated and implemented a datapath, control unit(with two counters for address tracking) components and memory access.
 
-The focus of this project was to design a datapath in an efficient way, sharing physical resources(components) between various operations and reusing registers for holding different signals. This was achieved through priority listing and list scheduling.
+The focus of this project was to design a circuit in an efficient way to compute various determinants. This was achieved through pipelining.
   
-We simulated the final circuit to test if its behaviour was as designed. This allowed us to
+We implemented the final circuit to test if its behaviour was as designed and verified its outputs with the provided script. This allowed us to
 find errors in our design, correct them in timely manner and fine tune the clock period to a reasonable value maintaining a positive Worst Negative Slack.
 
 Further optimizations were discussed such as pipelining and reducing the number of registers. Both solutions implied a trade-off, the former requiring more components and the latter increasing the clock period thus decreasing throughput.
 
-
+\printbibliography
 \end{document}
