@@ -138,17 +138,12 @@ To start the work a data-flow graph was made accordingly with the operations nee
 
 \begin{figure}[H]
 	\centering
-	\includegraphics[width=0.35\linewidth]{images/DataFlowGraph.png}
+	\includegraphics[width=0.55\linewidth]{images/DataFlowGraph.png}
 	\caption{Data-Flow Graph}
 	\label{fig:dataflow}
 \end{figure}
 
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.35\linewidth]{images/DataPath.png}
-	\caption{Data-Flow Graph}
-	\label{fig:datapath}
-\end{figure}
+
 
 
 \begin{figure}[H]
@@ -160,7 +155,19 @@ To start the work a data-flow graph was made accordingly with the operations nee
 
 \section{Circuit Design}
 \subsection{Data-Path}
+Utilizing the data-flow graph as a base for our data-path design. We designed the data-path already as a pipeline in order to make the operations faster and efficient. The final design as three main parts, loading from memory, determinants operation and operations done to the determinants, can be seen in the figure \ref{fig:datapath}.
 
+The first part is the registers that contain all values, real and imaginary, of the matrix. This values are loaded from memory and takes four clock cycles because only one value at a time from the matrix can be retrieved. The managing of what loads what for the register is done by the control unit.
+
+The second part is the operations to calculate the determinants, this is done by realizing the operation $$DET=(((R11*R22)-(I11*I22))-((R12*R21)-(I12*I21))) $$. This is done in three stages of the pipeline placing the real and imaginary values of the determinant of the matrix in registers REG\textunderscore DETR and REG\textunderscore DETI. This registers outputs will be then also connected to a multiplexer for the output memory.
+
+The third and last part is responsible to calculate the average and determine the highest and lowest absolute value of the determinant of all matrix calculated. to calculate the average of all eight matrix we use a ALU and register so as each determinant is ready the control unit enables the register and the new determinant is added. In the end when sent to the multiplexer of the output memory the sum is divided by eight. To determine the highest and lowest determinant of the absolute values the last part in the data-path. The absolute operation is done by seeing if the signed bit is positive or negative connects to a multiplexer, if is a 1 the determinant is negated and added 1 this way obtaining the absolute if it is 0 the value of the previous register will just pass. After this the imaginary and real part are just summed and then compared to the previous max and min values saved in registers if they are they are saved. There is also a counter that saves the matrix number that corresponds to the value saved. This then is used to light up the correct leds. 
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.75\linewidth]{images/DataPath.png}
+	\caption{Data-Flow Graph}
+	\label{fig:datapath}
+\end{figure}
 
 
 \subsection{Control Unit}
@@ -195,3 +202,4 @@ Further optimizations were discussed such as pipelining and reducing the number 
 
 \printbibliography
 \end{document}
+
