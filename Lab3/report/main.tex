@@ -31,6 +31,9 @@
 \usepackage{float} % Utilizar o especificador [H] nas figuras
 \usepackage{graphicx} % Imagens em LaTeX
 \usepackage[colorlinks = true, plainpages = true, linkcolor = istblue, urlcolor = istblue, citecolor = istblue, anchorcolor = istblue]{hyperref}
+\usepackage{csquotes}
+\usepackage{listings}
+\usepackage{amsmath}
 \usepackage{indentfirst} % Primeiro parágrafo
 \usepackage{siunitx} % Unidades SI
 \usepackage{subcaption} % Subfiguras
@@ -164,7 +167,7 @@ To start the work a data-flow graph was made accordingly with the operations nee
 
 
 \subsection{Control Unit}
-The control unit implements a finite state machine with 14 states. A start state awaits for the command to begin calculations(BTNR) , followed by 5 states to fill up the pipeline, 4 states that repeat until the last matrix arrives at the datapath, 3 states to empty it and one done state where the machine and presents the results.
+The control unit implements a finite state machine with 14 states. A start state awaits for the command to begin calculations(BTNR), followed by 5 states to fill up the pipeline, 4 states that repeat until the last matrix arrives at the datapath, 3 states to empty it and one done state where the machine and presents the results.
 Two counters keep trace of input and output memory addresses.
 
 Each state takes up one clock cycle, except for the start and done states which extend indefinitely. A reset signal returns the control to the start state, the counters to 0 and all registers to 0.
@@ -182,6 +185,74 @@ Figure is a portion of the behavioral simulation of the circuit. We can observe 
 
 Figure is a similar cutout, but now from the Post-Implementation Timing Simulation. We now can't see the states, however we can see that the write enable and data out behaviour is the same. Notice how the result of -343976512 is correct for address 2.
 
+\section{Simulations and Results}
+This section elaborates on different sets of simulations that were employed to verify the behaviour of our circuit. Various testbenches were developed to check behaviout at different stages of the development process.
+
+For all simulations and fisical tests assume that MemIn is initialized with the values corresponding to the seed 46. Other values where tested and functioned in the same manner.
+\subsection{DataPath}
+The file datapath\_tb.vhd implements a testbench for the datapath unit of the circuit. 
+It first resets the component and afterwards excites the inputs with a known matrix. This allows the developer to observe the latency of the circuit and also verify the answer. It was used extensively for debugging. 
+
+The current matrix used in the test bench is:
+\begin{equation*}
+	\begin{vmatrix} 2+i & 2+2i \\ 
+					1-i & 1+4i 
+	\end{vmatrix} 
+	= -7 + 10i
+\end{equation*}
+
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=0.5\linewidth]{images/simDataPath.png}
+	\caption{Data path simulation}
+	\label{fig:simData}
+\end{figure}
+
+Notice how in figure \ref{fig:simData} it takes 4 cycles for the real portion of the determinant to be set, and it takes 5 for the imaginary. Calling back to figure \ref{fig:datapath} we can see how that is as expected due to the number of registers.
+
+\subsection{Control Unit}
+\subsection{Circuit}
+An intermediate testbench was created for the total designed circuit, but without the IO and FPGA integration.
+The circuit\_tb.vhd file instantiates said circuit as well as the MemIn component and does the necessary connections.
+
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/simCircuit.png}
+	\caption{Siplified circuit simulation}
+	\label{fig:simCircuit}
+\end{figure}
+
+Notice how in figure \ref{fig:simCircuit} the first write enable happens after 7 clock cycles. This is due to the memory accesses. It takes 4 clock cycles for all values to be fetched. We can see this in the registers present in the waveform.
+
+The last WE occurs after 38 clock cycles.
+
+\subsection{Top Circuit}
+The top circuit was the file provided that handled the IO and connections with the FPGA board. As well as the component file a simulation source was also provided, top\_circuit\_tb.vhd. 
+This testbench was used mostly for the demonstration and post implementation simulations. The following is an excerpt from the post implementation timing simulation.
+
+
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/simTopCircuit.png}
+	\caption{Top circuit simulation}
+	\label{fig:simTopCircuit}
+\end{figure}
+
+Notice how the board LEDs are now visible in the simulation. We can see how they update around 2-3 clock cycles after the write enable which is consistent with the schematic in figure \ref{fig:datapath}.
+We can also observe how values are set around the midpoint of the high portion of the clock. Possible timing improvements will be discussed later.
+
+\subsection{Fisical Board test}
+The fisical board test went as expected.
+Serial communication with the board was handled through the cu command (see man cu(1) for sepecifications).
+
+All results were correct and as expected.
+
+\section{Possible improvements}
+Besides pipelining, no other timing or throughput improvements were implemented.
+
+The Worst Negative Slack has a value of 3.868ns which implies possible over clocking capabilities. In fact simulations using an 8ns clock cycle yielded cprrect results. However this was not fully implemented nor was it tested on the board.
+
+In the datapath certain pipeline stages could have been joint together due to the fact that they are composed only of simple ALU maths like sums and subtractions. This could have lead to improved throughput and a overall faster circuit.
 
 \section{Conclusion}
 Through this laboratory we successfully simulated and implemented a datapath, control unit(with two counters for address tracking) components and memory access.
