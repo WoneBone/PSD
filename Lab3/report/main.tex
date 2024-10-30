@@ -164,7 +164,7 @@ The first part is the registers that contain all values, real and imaginary, of 
 
 The second part is the operations to calculate the determinants, this is done by realizing the operation $$DET=(((R11*R22)-(I11*I22))-((R12*R21)-(I12*I21))) $$. This is done in three stages of the pipeline placing the real and imaginary values of the determinant of the matrix in registers REG\textunderscore DETR and REG\textunderscore DETI. This registers outputs will be then also connected to a multiplexer for the output memory.
 
-The third and last part is responsible to calculate the average and determine the highest and lowest absolute value of the determinant of all matrix calculated. to calculate the average of all eight matrix we use a ALU and register so as each determinant is ready the control unit enables the register and the new determinant is added. In the end when sent to the multiplexer of the output memory the sum is divided by eight. To determine the highest and lowest determinant of the absolute values the last part in the data-path. The absolute operation is done by seeing if the signed bit is positive or negative connects to a multiplexer, if is a 1 the determinant is negated and added 1 this way obtaining the absolute if it is 0 the value of the previous register will just pass. After this the imaginary and real part are just summed and then compared to the previous max and min values saved in registers if they are they are saved. There is also a counter that saves the matrix number that corresponds to the value saved. This then is used to light up the correct leds. 
+The third and last part is responsible to calculate the average and determine the highest and lowest absolute value of the determinant of all matrix calculated. To calculate the average of all eight matrix we use a ALU and register so as each determinant is ready the control unit enables the register and the new determinant is added. In the end when sent to the multiplexer of the output memory the sum is divided by eight. To determine the highest and lowest determinant of the absolute values the last part in the data-path. The absolute operation is done by seeing if the signed bit is positive or negative connects to a multiplexer, if is a 1 the determinant is negated and added 1 this way obtaining the absolute if it is 0 the value of the previous register will just pass. After this the imaginary and real part are just summed and then compared to the previous max and min values saved in registers if they are they are saved. There is also a counter that saves the matrix number that corresponds to the value saved. This then is used to light up the correct leds. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.75\linewidth]{images/DataPath.png}
@@ -193,7 +193,7 @@ Figure is a portion of the behavioral simulation of the circuit. We can observe 
 Figure is a similar cutout, but now from the Post-Implementation Timing Simulation. We now can't see the states, however we can see that the write enable and data out behaviour is the same. Notice how the result of -343976512 is correct for address 2.
 
 \section{Simulations and Results}
-This section elaborates on different sets of simulations that were employed to verify the behaviour of our circuit. Various testbenches were developed to check behaviout at different stages of the development process.
+This section elaborates on different sets of simulations that were employed to verify the behaviour of our circuit. Various testbenches were developed to check behaviour at different stages of the development process.
 
 For all simulations and fisical tests assume that MemIn is initialized with the values corresponding to the seed 46. Other values where tested and functioned in the same manner.
 \subsection{DataPath}
@@ -218,6 +218,19 @@ The current matrix used in the test bench is:
 Notice how in figure \ref{fig:simData} it takes 4 cycles for the real portion of the determinant to be set, and it takes 5 for the imaginary. Calling back to figure \ref{fig:datapath} we can see how that is as expected due to the number of registers.
 
 \subsection{Control Unit}
+Similar to the datapath\_tb.vhd, the control\_tb.vhd was used to verify the behaviour of the control unit component.
+
+It resets the component and then starts the process. 
+
+\begin{figure}[!htp]
+	\centering
+	\includegraphics[width=0.7\linewidth]{images/simControl.png}
+	\caption{Siplified circuit simulation}
+	\label{fig:simContro}
+\end{figure}
+
+The simulation was used to check if the state progression was according to what was designed (check fig. \ref{fig:fsm}), and check the outputs for each state.
+
 \subsection{Circuit}
 An intermediate testbench was created for the total designed circuit, but without the IO and FPGA integration.
 The circuit\_tb.vhd file instantiates said circuit as well as the MemIn component and does the necessary connections.
@@ -248,18 +261,18 @@ This testbench was used mostly for the demonstration and post implementation sim
 Notice how the board LEDs are now visible in the simulation. We can see how they update around 2-3 clock cycles after the write enable which is consistent with the schematic in figure \ref{fig:datapath}.
 We can also observe how values are set around the midpoint of the high portion of the clock. Possible timing improvements will be discussed later.
 
-\subsection{Fisical Board test}
-The fisical board test went as expected.
-Serial communication with the board was handled through the cu command (see man cu(1) for sepecifications).
+\subsection{Physical Board test}
+The physical board test went as expected.
+Serial communication with the board was handled through the cu command (see man cu(1) for specifications).
 
 All results were correct and as expected.
 
 \section{Possible improvements}
 Besides pipelining, no other timing or throughput improvements were implemented.
 
-The Worst Negative Slack has a value of 3.868ns which implies possible over clocking capabilities. In fact simulations using an 8ns clock cycle yielded cprrect results. However this was not fully implemented nor was it tested on the board.
+The Worst Negative Slack has a value of 3.868ns which implies possible over-clocking capabilities. In fact simulations using an 8ns clock cycle yielded correct results. However this was not fully implemented nor was it tested on the board.
 
-In the datapath certain pipeline stages could have been joint together due to the fact that they are composed only of simple ALU maths like sums and subtractions. This could have lead to improved throughput and a overall faster circuit.
+In the datapath certain pipeline stages could have been joint together due to the fact that they are composed only of simple ALU operations like sums and subtractions. This could have lead to improved throughput and an overall faster circuit.
 
 \section{Conclusion}
 Through this laboratory we successfully simulated and implemented a datapath, control unit(with two counters for address tracking) components and memory access.
