@@ -134,7 +134,7 @@ sorting=nyt,
 \section{Introduction}
 The following report pertains to the third laboratory task of Project of Digital Systems.
 
-The objective is to design a circuit that computes determinants of complex valued matrices, with VHDL hardware description language and making use of simulation and logic synthesis. The circuit is then implemented with the AMD Vivado™ tool in the Digilent Basys 3™ FPGA board. 
+The objective is to design a circuit that computes determinants of complex valued matrices, with VHDL hardware description language and making use of simulation and logic synthesis. The circuit is then implemented with the AMD Vivado™ tool \cite{amd-vivado} in the Digilent Basys 3™ FPGA board \cite{basys3-board}. 
 
 \section{Data-flow Graph}
 To start the work a data-flow graph was made accordingly with the operations needed to compute the determinant's. The result is presented in image \ref{fig:dataflow} corresponds to one loop iteration of the algorithm. This graph shows the serialization limitation of the sequence of operations needed and allows us to make a priority list based on the critical path.
