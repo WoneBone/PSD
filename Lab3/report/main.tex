@@ -61,11 +61,11 @@
 
 %importar bibliografia
 \usepackage[
-backend=biber,
+backend=bibtex,
 style=alphabetic,
 sorting=nyt,
 ]{biblatex}
-\addbibresource{refs.bib} 
+\addbibresource{refs.bib}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                               Documento                              %
@@ -260,9 +260,9 @@ We can also observe how values are set around the midpoint of the high portion o
 
 \subsection{Physical Board test}
 The physical board test went as expected.
-Serial communication with the board was handled through the cu command (see man cu(1) for specifications).
+Serial communication with the board was handled through the cu command\cite{cu-command} (see man cu(1) for specifications).
 
-All results were correct and as expected.
+All results were correct and as expected, code provided by the professor was used to check differences between produced results and expected \cite{codetcomp}.
 
 \section{Possible improvements}
 Besides pipelining, no other timing or throughput improvements were implemented.
@@ -279,7 +279,7 @@ The focus of this project was to design a circuit in an efficient way to compute
 We implemented the final circuit to test if its behaviour was as designed and verified its outputs with the provided script. This allowed us to
 find errors in our design, correct them in timely manner and fine tune the clock period to a reasonable value maintaining a positive Worst Negative Slack.
 
-Further optimizations were discussed such as pipelining and reducing the number of registers. Both solutions implied a trade-off, the former requiring more components and the latter increasing the clock period thus decreasing throughput.
+Further optimizations were discussed such as reducing the number of pipeline steps and shortening the clock period. Both solutions implied a trade-off, reducing the Worst Negative Slack.
 
 \printbibliography
 \end{document}
