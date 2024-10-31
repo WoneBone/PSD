@@ -147,24 +147,15 @@ To start the work a data-flow graph was made accordingly with the operations nee
 \end{figure}
 
 
-
-
-\begin{figure}[H]
-	\centering
-	\includegraphics[width=0.55\linewidth]{images/FSM_lab3.png}
-	\caption{Finite State Machine}
-	\label{fig:fsm}
-\end{figure}
-
 \section{Circuit Design}
 \subsection{Data-Path}
-Utilizing the data-flow graph as a base for our data-path design. We designed the data-path already as a pipeline in order to make the operations faster and efficient. The final design as three main parts, loading from memory, determinants operation and operations done to the determinants, can be seen in the figure \ref{fig:datapath}.
+Utilizing the data-flow graph as a base for our data-path design. We designed the data-path already as a pipeline in order to make the operations faster and efficient. The final design has three main parts, loading from memory, determinants operation and operations done to the determinants, can be seen in the figure \ref{fig:datapath}.
 
-The first part is the registers that contain all values, real and imaginary, of the matrix. This values are loaded from memory and takes four clock cycles because only one value at a time from the matrix can be retrieved. The managing of what loads what for the register is done by the control unit.
+The first part is the registers that contain all values, real and imaginary, of the matrix. These values are loaded from memory and it takes four clock cycles to load a matrix because only one value can be retrieved at a time. The managing of what loads for what register is done by the control unit.
 
-The second part is the operations to calculate the determinants, this is done by realizing the operation $$DET=(((R11*R22)-(I11*I22))-((R12*R21)-(I12*I21))) $$. This is done in three stages of the pipeline placing the real and imaginary values of the determinant of the matrix in registers REG\textunderscore DETR and REG\textunderscore DETI. This registers outputs will be then also connected to a multiplexer for the output memory.
+The second part is the operations to calculate the determinants. This is done by realizing the operation $$DET=(((R11*R22)-(I11*I22))-((R12*R21)-(I12*I21))) $$. This is done in three stages of the pipeline placing the real and imaginary values of the determinant of the matrix in registers REG\textunderscore DETR and REG\textunderscore DETI. These registers outputs will be then also connected to a multiplexer for the output memory.
 
-The third and last part is responsible to calculate the average and determine the highest and lowest absolute value of the determinant of all matrix calculated. To calculate the average of all eight matrix we use a ALU and register so as each determinant is ready the control unit enables the register and the new determinant is added. In the end when sent to the multiplexer of the output memory the sum is divided by eight. To determine the highest and lowest determinant of the absolute values the last part in the data-path. The absolute operation is done by seeing if the signed bit is positive or negative connects to a multiplexer, if is a 1 the determinant is negated and added 1 this way obtaining the absolute if it is 0 the value of the previous register will just pass. After this the imaginary and real part are just summed and then compared to the previous max and min values saved in registers if they are they are saved. There is also a counter that saves the matrix number that corresponds to the value saved. This then is used to light up the correct leds. 
+The third and last part is responsible for calculating the average and determining the highest and lowest absolute value of the determinant of all matrices calculated. To calculate the average of all eight matrices we use an ALU and register so as each determinant is ready the control unit enables the register and the new determinant is added. In the end, when sent to the multiplexer of the output memory the sum is divided by eight. The highest and lowest determinants in absolute value are determined at the last part in the data-path. The absolute operation is done by seeing if the signed bit is positive or negative connects to a multiplexer, if is a 1 the determinant is negated and added 1 this way obtaining the absolute if it is 0 the value of the previous register will just pass. After this the imaginary and real part are just summed and then compared to the previous max and min values saved in registers if they are, they are saved. There is also a counter that saves the matrix number that corresponds to the value saved. This is then used to light up the correct leds. 
 \begin{figure}[H]
 	\centering
 	\includegraphics[width=0.75\linewidth]{images/DataPath.png}
@@ -174,15 +165,21 @@ The third and last part is responsible to calculate the average and determine th
 
 
 \subsection{Control Unit}
-The control unit implements a finite state machine with 14 states. A start state awaits for the command to begin calculations(BTNR), followed by 5 states to fill up the pipeline, 4 states that repeat until the last matrix arrives at the datapath, 3 states to empty it and one done state where the machine and presents the results.
+The control unit implements a finite state machine with 14 states\ref{fig:fsm}. A start state awaits for the command to begin calculations(BTNR), followed by 5 states to fill up the pipeline, 4 states that repeat until the last matrix arrives at the datapath, 3 states to empty it and one done state where the machine presents the results.
 Two counters keep trace of input and output memory addresses.
 
 Each state takes up one clock cycle, except for the start and done states which extend indefinitely. A reset signal returns the control to the start state, the counters to 0 and all registers to 0.
+\begin{figure}[H]
+	\centering
+	\includegraphics[width=0.55\linewidth]{images/FSM_lab3.png}
+	\caption{Finite State Machine}
+	\label{fig:fsm}
+\end{figure}
 
 
 For simplicity, we will only show the simulations done for MemIn1.
 
-The test-bench used is very simple. All it does is reset the circuit followed by handling the clock.
+The test-bench used is very simple. All it does is reset the circuit and press BTNR, followed by handling the clock.
 
 The clock cycle of the circuit was set to 18ns in the constraints and the same value was used for the test-bench. This left us with a WNS of 3.697ns.
 
@@ -195,7 +192,7 @@ Figure is a similar cutout, but now from the Post-Implementation Timing Simulati
 \section{Simulations and Results}
 This section elaborates on different sets of simulations that were employed to verify the behaviour of our circuit. Various testbenches were developed to check behaviour at different stages of the development process.
 
-For all simulations and fisical tests assume that MemIn is initialized with the values corresponding to the seed 46. Other values where tested and functioned in the same manner.
+For all simulations and physical tests assume that MemIn is initialized with the values corresponding to the seed 46. Other values where tested and functioned in the same manner.
 \subsection{DataPath}
 The file datapath\_tb.vhd implements a testbench for the datapath unit of the circuit. 
 It first resets the component and afterwards excites the inputs with a known matrix. This allows the developer to observe the latency of the circuit and also verify the answer. It was used extensively for debugging. 
