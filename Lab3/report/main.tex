@@ -176,19 +176,6 @@ Each state takes up one clock cycle, except for the start and done states which 
 	\label{fig:fsm}
 \end{figure}
 
-
-For simplicity, we will only show the simulations done for MemIn1.
-
-The test-bench used is very simple. All it does is reset the circuit and press BTNR, followed by handling the clock.
-
-The clock cycle of the circuit was set to 18ns in the constraints and the same value was used for the test-bench. This left us with a WNS of 3.697ns.
-
-
-Figure is a portion of the behavioral simulation of the circuit. We can observe the different states and the data out change as the calculations finish and write enable toggles. Notice also how this is address 3 of the memory, the final value of -536804112 is correct.
-
-
-Figure is a similar cutout, but now from the Post-Implementation Timing Simulation. We now can't see the states, however we can see that the write enable and data out behaviour is the same. Notice how the result of -343976512 is correct for address 2.
-
 \section{Simulations and Results}
 This section elaborates on different sets of simulations that were employed to verify the behaviour of our circuit. Various testbenches were developed to check behaviour at different stages of the development process.
 
@@ -222,8 +209,8 @@ It resets the component and then starts the process.
 \begin{figure}[!htp]
 	\centering
 	\includegraphics[width=0.7\linewidth]{images/simControl.png}
-	\caption{Siplified circuit simulation}
-	\label{fig:simContro}
+	\caption{Control testbencs detail}
+	\label{fig:simControl}
 \end{figure}
 
 The simulation was used to check if the state progression was according to what was designed (check fig. \ref{fig:fsm}), and check the outputs for each state.
